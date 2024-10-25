@@ -1,4 +1,5 @@
 import { useGameState } from "../game-state"
+import { cn } from "../util"
 
 export const Grid = () => {
     const width = 4
@@ -11,7 +12,7 @@ export const Grid = () => {
                         const xCord = x + 1
                         const yCord = y + 1
                         const idx = xCord * yCord
-                        return <Cell key={idx} x={xCord} y={yCord} index={idx} />
+                        return <Cell key={idx} x={xCord} y={yCord} />
                     })}
                 </div>
             ))}
@@ -19,17 +20,30 @@ export const Grid = () => {
     )
 }
 
-const Cell = ({ x, y, index }: { x: number; y: number; index: number }) => {
+const Cell = ({ x, y }: { x: number; y: number }) => {
     const { grid } = useGameState()
 
+    const isCurrentCell = grid.x.get === x && grid.y.get === y
+    const xDist = Math.abs(grid.x.get - x)
+    const yDist = Math.abs(grid.y.get - y)
+    const canMoveToCell = !isCurrentCell && xDist <= 1 && yDist <= 1
+
     const onClickCell = () => {
+        if (!canMoveToCell) return
         grid.x.set(x)
         grid.y.set(y)
     }
 
     return (
-        <div onClick={onClickCell} className="size-24 bg-red border border-red hover:bg-zinc-50">
-            This is a cell
+        <div
+            onClick={onClickCell}
+            className={cn(
+                "size-24 items-center justify-center border border-red hover:bg-zinc-50",
+                isCurrentCell && "border-yellow-900",
+                canMoveToCell && "hover:bg-green-200"
+            )}
+        >
+            {isCurrentCell && <span>🚀</span>}
         </div>
     )
 }
