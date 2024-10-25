@@ -1,18 +1,15 @@
 import { useDroppable } from "@dnd-kit/core"
 import { useDragAndDrop } from "../drag-and-drop-provider"
 import { getItemId } from "../types/item-state"
-import { ItemType } from "../types/item-type"
+import { SlotState } from "../types/slot-state"
 import { Item } from "./item"
 
-type Props = {
-    itemType: ItemType | undefined
-    inventorySource: "player-inventory"
-    inventoryPosition: number
-}
-export const Slot = ({ itemType, inventorySource, inventoryPosition }: Props) => {
+type Props = SlotState & { colour: string }
+
+export const Slot = ({ itemType, inventorySource, inventoryPosition, colour }: Props) => {
     const { setNodeRef } = useDroppable({
         id: inventorySource + inventoryPosition.toString(),
-        data: { type: itemType, inventorySource, inventoryPosition }
+        data: { itemType, inventorySource, inventoryPosition }
     })
 
     const draggedItem = useDragAndDrop()
@@ -20,7 +17,7 @@ export const Slot = ({ itemType, inventorySource, inventoryPosition }: Props) =>
         draggedItem !== undefined && itemType !== undefined && getItemId(draggedItem) === getItemId({ type: itemType, inventorySource, inventoryPosition })
 
     return (
-        <div ref={setNodeRef} className="bg-orange-300">
+        <div ref={setNodeRef} className={colour}>
             {itemType && !isDraggingThisSlotsItem && <Item item={{ type: itemType, inventorySource, inventoryPosition }} />}
         </div>
     )

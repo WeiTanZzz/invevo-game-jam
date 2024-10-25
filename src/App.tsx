@@ -3,7 +3,7 @@ import { TelescopeMiniGame } from "./TelescopeMiniGame"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
-import { PlayerInventory } from "./inventory/player-inventory.tsx"
+import { Inventory } from "./inventory/inventory.tsx"
 import { Map } from "./map/map.tsx"
 
 function App() {
@@ -32,7 +32,9 @@ function App() {
                 ) : (
                     <>
                         <Map />
-                        <PlayerInventory />
+                        <Inventory id="chest-one" width={1} height={4} colour="bg-blue-300" />
+                        <Inventory id="player-inventory" width={2} height={4} colour="bg-orange-300" />
+                        <Inventory id="chest-two" width={2} height={2} colour="bg-blue-300" />
                     </>
                 )}
             </DragAndDropProvider>

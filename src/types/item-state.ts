@@ -2,7 +2,7 @@ import { ItemType } from "./item-type"
 
 export type ItemState = {
     type: ItemType
-    inventorySource: "player-inventory"
+    inventorySource: "player-inventory" | "chest-one" | "chest-two"
     inventoryPosition: number
 }
 
