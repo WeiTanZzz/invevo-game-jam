@@ -19,7 +19,7 @@ export const TelescopeMiniGame = () => {
     }, [])
 
     return (
-        <div className="relative w-screen h-screen bg-cover bg-center overflow-hidden" style={{ backgroundImage: 'url("./beach.png")' }}>
+        <div className="cursor-none relative w-screen h-screen bg-cover bg-center overflow-hidden" style={{ backgroundImage: 'url("./beach.png")' }}>
             <div
                 className="absolute inset-0 bg-black"
                 style={{
