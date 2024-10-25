@@ -4,7 +4,8 @@ import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
 import { PlayerInventory } from "./inventory/player-inventory.tsx"
-import { Grid } from "./map/grid.tsx"
+import { Map } from "./map/map.tsx"
+import { DraggedItem } from "./types/dragged-item.ts"
 
 function App() {
     const audioManager = useAudio()
@@ -31,7 +32,7 @@ function App() {
                     <TelescopeMiniGame />
                 ) : (
                     <>
-                        <Grid />
+                        <Map />
                         <PlayerInventory />
                     </>
                 )}

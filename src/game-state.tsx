@@ -1,9 +1,11 @@
 import { createContext, ReactNode, useContext, useState } from "react"
+import { GRID_HEIGHT, GRID_WIDTH } from "./map/grid"
+import { DraggedItem } from "./types/dragged-item"
 
 type GameState = {
     grid: {
-        x: { get: number; set: (x: number) => void }
-        y: { get: number; set: (y: number) => void }
+        x: { get: number; set: (x: number) => void; increment: (change: number) => void }
+        y: { get: number; set: (y: number) => void; increment: (change: number) => void }
     }
 }
 
@@ -15,6 +17,7 @@ export const useGameState = () => {
     }
     return context
 }
+
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [x, setX] = useState(1)
     const [y, setY] = useState(1)
@@ -24,7 +27,18 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <GameStateContext.Provider value={{ grid: { x: { get: x, set: setX }, y: { get: y, set: setY } }, reset: reset }}>{children}</GameStateContext.Provider>
+        <GameStateContext.Provider
+            value={{
+                draggedItem: { get: draggedItem, set: setDraggedItem },
+                grid: {
+                    x: { get: x, set: setX, increment: (change: number) => setX(v => (1 <= v + change && v + change <= GRID_WIDTH ? v + change : v)) },
+                    y: { get: y, set: setY, increment: (change: number) => setY(v => (1 <= v + change && v + change <= GRID_HEIGHT ? v + change : v)) }
+                },
+                reset: reset
+            }}
+        >
+            {children}
+        </GameStateContext.Provider>
     )
 }
 
