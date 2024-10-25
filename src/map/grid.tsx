@@ -2,17 +2,17 @@ import { useLayoutEffect } from "react"
 import { useGameState } from "../game-state"
 import { cn } from "../util"
 
-export const GRID_WIDTH = 10
-export const GRID_HEIGHT = 5
+export const GRID_WIDTH = 31
+export const GRID_HEIGHT = 11
 
 export const Grid = () => {
     const { grid } = useGameState()
 
     const onKeyPress = (e: KeyboardEvent) => {
-        if (e.key === "a") grid.x.increment(-1)
-        if (e.key === "d") grid.x.increment(1)
-        if (e.key === "w") grid.y.increment(-1)
-        if (e.key === "s") grid.y.increment(1)
+        if (e.key === "a") grid.move("left")
+        if (e.key === "d") grid.move("right")
+        if (e.key === "w") grid.move("up")
+        if (e.key === "s") grid.move("down")
     }
 
     useLayoutEffect(() => {
@@ -21,9 +21,9 @@ export const Grid = () => {
     }, [])
 
     return (
-        <div className="flex flex-col grow items-center justify-center">
+        <div className="flex flex-1 flex-col items-center justify-center">
             {new Array(GRID_HEIGHT).fill(1).map((_, y) => (
-                <div className="flex flex-row">
+                <div className="flex flex-row flex-1 grow w-full">
                     {new Array(GRID_WIDTH).fill(1).map((_, x) => {
                         const xCord = x + 1
                         const yCord = y + 1
@@ -40,23 +40,28 @@ const Cell = ({ x, y }: { x: number; y: number }) => {
     const { grid } = useGameState()
 
     const isCurrentCell = grid.x.get === x && grid.y.get === y
-    const xDist = Math.abs(grid.x.get - x)
-    const yDist = Math.abs(grid.y.get - y)
-    const canMoveToCell = !isCurrentCell && xDist <= 1 && yDist <= 1
+    const xDist = grid.x.get - x
+    const yDist = grid.y.get - y
+    const canMoveToCell = !isCurrentCell && Math.abs(xDist) <= 1 && Math.abs(yDist) <= 1
 
     const onClickCell = () => {
         if (!canMoveToCell) return
-        grid.x.set(x)
-        grid.y.set(y)
+        if (xDist < 0) grid.move("right")
+        if (xDist > 0) grid.move("left")
+        if (yDist < 0) grid.move("down")
+        if (yDist > 0) grid.move("up")
     }
 
     return (
         <div
             onClick={onClickCell}
             className={cn(
-                "size-20 items-center justify-center border",
+                "w-1/12 grow aspect-square items-center justify-center border",
                 isCurrentCell && "border-yellow-500",
-                canMoveToCell ? "hover:border-green-500" : !isCurrentCell && "hover:border-red-500"
+                canMoveToCell ? "hover:border-green-500" : !isCurrentCell && "hover:border-red-500",
+                isCurrentCell && grid.lastMove === "right" && "rotate-90",
+                isCurrentCell && grid.lastMove === "down" && "rotate-180",
+                isCurrentCell && grid.lastMove === "left" && "-rotate-90"
             )}
         >
             {isCurrentCell && <span>🚀</span>}
