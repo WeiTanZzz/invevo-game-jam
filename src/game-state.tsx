@@ -3,6 +3,7 @@ import { GRID_HEIGHT, GRID_WIDTH } from "./map/grid"
 import { DraggedItem } from "./types/dragged-item"
 
 type GameState = {
+    draggedItem: { get: DraggedItem | undefined; set: (item: DraggedItem | undefined) => void }
     grid: {
         x: { get: number; set: (x: number) => void; increment: (change: number) => void }
         y: { get: number; set: (y: number) => void; increment: (change: number) => void }
@@ -19,6 +20,7 @@ export const useGameState = () => {
 }
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
+    const [draggedItem, setDraggedItem] = useState<DraggedItem>()
     const [x, setX] = useState(1)
     const [y, setY] = useState(1)
     const reset = () => {
