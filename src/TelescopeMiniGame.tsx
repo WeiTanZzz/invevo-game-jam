@@ -1,6 +1,26 @@
 import { useState, useEffect } from "react"
 
 export const TelescopeMiniGame = () => {
+    const [checkingMap, setCheckingMap] = useState(false)
+
+    return (
+        <div>
+            <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                {checkingMap ? "Check Telescope" : "Check legend"}
+            </button>
+            {checkingMap ? <UseMap /> : <UseTelescopeMiniGame />}
+        </div>
+    )
+}
+const UseMap = () => {
+    return (
+        <div className="flex flex-col items-center justify-center ">
+            <img src="./island To Find.png" alt="map" className="h-1/3 w-1/3" />
+        </div>
+    )
+}
+
+const UseTelescopeMiniGame = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
 
     useEffect(() => {
