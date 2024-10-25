@@ -10,7 +10,7 @@ export const TelescopeMiniGame = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
 
     useEffect(() => {
-        audio.addEffect(AUDIO_FIND_ISLAND, "/audio/effect/shoot.mp3")
+        audio.addEffect(AUDIO_FIND_ISLAND, "/audio/effect/find-island.mp3")
 
         const handlerIslandFound = (event: MouseEvent) => {
             const canvas = canvasRef.current
