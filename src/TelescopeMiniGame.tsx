@@ -4,9 +4,6 @@ import { useAudio } from "./audio/AudioProvider.tsx"
 const AUDIO_FIND_ISLAND = "telescope/find-island"
 
 export const TelescopeMiniGame = () => {
-    const audio = useAudio()
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [islandDetected, setIslandDetected] = useState(false)
     const [checkingMap, setCheckingMap] = useState(false)
 
     return (
@@ -28,6 +25,9 @@ const UseMap = () => {
 
 const UseTelescopeMiniGame = () => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
+    const audio = useAudio()
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const [islandDetected, setIslandDetected] = useState(false)
 
     useEffect(() => {
         audio.addEffect(AUDIO_FIND_ISLAND, "/audio/effect/find-island.mp3")
