@@ -5,7 +5,7 @@ import { useAudio } from "./audio/AudioProvider.tsx"
 import { GameStateProvider } from "./game-state"
 import { Item } from "./inventory/item.tsx"
 import { PlayerInventory } from "./inventory/player-inventory.tsx"
-import { Grid } from "./map/grid.tsx"
+import { Map } from "./map/map.tsx"
 import { DraggedItem } from "./types/dragged-item.ts"
 
 function App() {
@@ -44,7 +44,7 @@ function App() {
                     <TelescopeMiniGame />
                 ) : (
                     <>
-                        <Grid />
+                        <Map />
                         <PlayerInventory />
                     </>
                 )}
