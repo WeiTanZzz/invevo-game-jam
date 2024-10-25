@@ -1,8 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react"
-import { DraggedItem } from "./types/dragged-item"
 
 type GameState = {
-    draggedItem: { get: DraggedItem | undefined; set: (item: DraggedItem | undefined) => void }
     grid: {
         x: { get: number; set: (x: number) => void }
         y: { get: number; set: (y: number) => void }
@@ -18,21 +16,15 @@ export const useGameState = () => {
     return context
 }
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
-    const [draggedItem, setDraggedItem] = useState<DraggedItem>()
     const [x, setX] = useState(1)
     const [y, setY] = useState(1)
     const reset = () => {
         setX(defaultGameState.grid.x)
         setY(defaultGameState.grid.y)
-        setDraggedItem(undefined)
     }
 
     return (
-        <GameStateContext.Provider
-            value={{ draggedItem: { get: draggedItem, set: setDraggedItem }, grid: { x: { get: x, set: setX }, y: { get: y, set: setY } }, reset: reset }}
-        >
-            {children}
-        </GameStateContext.Provider>
+        <GameStateContext.Provider value={{ grid: { x: { get: x, set: setX }, y: { get: y, set: setY } }, reset: reset }}>{children}</GameStateContext.Provider>
     )
 }
 
