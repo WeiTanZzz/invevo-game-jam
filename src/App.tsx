@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { TelescopeMiniGame } from "./TelescopeMiniGame"
 import { useAudio } from "./audio/AudioProvider.tsx"
+import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
-import { Map } from "./map/map.tsx"
+import { PlayerInventory } from "./inventory/player-inventory.tsx"
+import { Grid } from "./map/grid.tsx"
 
 function App() {
     const audioManager = useAudio()
@@ -10,12 +12,12 @@ function App() {
 
     return (
         <GameStateProvider>
-            <>
+            <DragAndDropProvider>
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
                     onClick={() => {
                         if (!inTelescopeMiniGame) {
-                            audioManager.setBGM("/audio/bg/007.mp3")
+                            audioManager.setBGM("/audio/bg/sailing.mp3")
                         } else {
                             audioManager.toggleBackgroundPlayPause()
                         }
@@ -25,8 +27,15 @@ function App() {
                 >
                     {inTelescopeMiniGame ? "exit telescop mini game" : "enter Telescope Mini Game "}
                 </button>
-                {inTelescopeMiniGame ? <TelescopeMiniGame /> : <Map />}
-            </>
+                {inTelescopeMiniGame ? (
+                    <TelescopeMiniGame />
+                ) : (
+                    <>
+                        <Grid />
+                        <PlayerInventory />
+                    </>
+                )}
+            </DragAndDropProvider>
         </GameStateProvider>
     )
 }

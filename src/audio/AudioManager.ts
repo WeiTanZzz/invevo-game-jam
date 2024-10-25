@@ -5,7 +5,7 @@ export class AudioManager {
     constructor() {
         this.backgroundAudio = new Audio()
         this.backgroundAudio.loop = true
-        this.backgroundAudio.volume = 0.5
+        this.backgroundAudio.volume = 0.3
         this.effects = {}
     }
 
@@ -25,13 +25,14 @@ export class AudioManager {
 
     addEffect(name: string, src: string) {
         const effect = new Audio(src)
+        effect.volume = 0.3
         this.effects[name] = effect
     }
 
     playEffect(name: string) {
         const effect = this.effects[name]
         if (effect) {
-            effect.currentTime = 0 // 重置到音效开始
+            effect.currentTime = 0
             effect.play().catch(error => console.log(`Failed to play effect ${name}:`, error))
         } else {
             console.warn(`Effect ${name} does not exist.`)
