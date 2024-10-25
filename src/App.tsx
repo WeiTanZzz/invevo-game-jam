@@ -1,10 +1,11 @@
 import './App.css'
+import { Grid } from './map/grid'
 
 function App() {
 
   return (
     <>
-            <div>Hello!</div>
+        <Grid />
     </>
   )
 }
