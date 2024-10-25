@@ -30,7 +30,7 @@ function App() {
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
                     onClick={() => {
                         if (!inTelescopeMiniGame) {
-                            audioManager.setBGM("/audio/bg/007.mp3")
+                            audioManager.setBGM("/audio/bg/sailing.mp3")
                         } else {
                             audioManager.toggleBackgroundPlayPause()
                         }
