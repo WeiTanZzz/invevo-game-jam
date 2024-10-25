@@ -1,15 +1,10 @@
-import { useState } from "react"
-import { useDragAndDrop } from "../drag-and-drop-provider"
-import { ItemType } from "../types/item-type"
-import { Item } from "./item"
+import { useGameState } from "../game-state"
+import { Slot } from "./slot"
 
 export const PlayerInventory = () => {
-    const draggedItem = useDragAndDrop()
+    const { items } = useGameState()
 
-    const [inventory, setInventory] = useState<{ item: ItemType; position: number }[]>([
-        { item: "Cannon Ball", position: 0 },
-        { item: "Rope", position: 4 }
-    ])
+    const inventory = items.get.filter(item => item.inventorySource === "player-inventory")
 
     return (
         <div
@@ -19,16 +14,9 @@ export const PlayerInventory = () => {
                 gridTemplateColumns: `repeat(2, 80px)`
             }}
         >
-            {[...Array(8)].map((_, i) => {
-                const filledSlot = inventory.find(s => s.position === i)
-                const isDragging = draggedItem && draggedItem.inventorySource === "player-inventory" && draggedItem.inventoryPosition === i
-                return (
-                    <div key={i} className="bg-orange-300">
-                        {filledSlot && !isDragging && (
-                            <Item item={{ type: filledSlot.item, inventoryPosition: filledSlot.position, inventorySource: "player-inventory" }} />
-                        )}
-                    </div>
-                )
+            {[...Array(8)].map((_, index) => {
+                const filledSlot = inventory.find(item => item.inventoryPosition === index)
+                return <Slot key={index} itemType={filledSlot?.type} inventoryPosition={index} inventorySource="player-inventory" />
             })}
         </div>
     )

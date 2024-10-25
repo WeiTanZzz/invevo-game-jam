@@ -1,7 +1,12 @@
 import { createContext, ReactNode, useContext, useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH } from "./map/grid"
+import { ItemState } from "./types/item-state"
 
 type GameState = {
+    items: {
+        get: ItemState[]
+        set: (items: ItemState[]) => void
+    }
     grid: {
         x: { get: number; set: (x: number) => void; increment: (change: number) => void }
         y: { get: number; set: (y: number) => void; increment: (change: number) => void }
@@ -18,6 +23,10 @@ export const useGameState = () => {
 }
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
+    const [items, setItems] = useState<ItemState[]>([
+        { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
+        { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
+    ])
     const [x, setX] = useState(1)
     const [y, setY] = useState(1)
     const reset = () => {
@@ -28,6 +37,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     return (
         <GameStateContext.Provider
             value={{
+                items: { get: items, set: setItems },
                 grid: {
                     x: { get: x, set: setX, increment: (change: number) => setX(v => (1 <= v + change && v + change <= GRID_WIDTH ? v + change : v)) },
                     y: { get: y, set: setY, increment: (change: number) => setY(v => (1 <= v + change && v + change <= GRID_HEIGHT ? v + change : v)) }
