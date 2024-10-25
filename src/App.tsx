@@ -2,7 +2,7 @@ import { useState } from "react"
 import { TelescopeMiniGame } from "./TelescopeMiniGame"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { GameStateProvider } from "./game-state"
-import { Grid } from "./map/grid"
+import { Map } from "./map/map.tsx"
 
 function App() {
     const audioManager = useAudio()
@@ -25,13 +25,7 @@ function App() {
                 >
                     {inTelescopeMiniGame ? "exit telescop mini game" : "enter Telescope Mini Game "}
                 </button>
-                {inTelescopeMiniGame ? (
-                    <TelescopeMiniGame />
-                ) : (
-                    <>
-                        <Grid />
-                    </>
-                )}
+                {inTelescopeMiniGame ? <TelescopeMiniGame /> : <Map />}
             </>
         </GameStateProvider>
     )
