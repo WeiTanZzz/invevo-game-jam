@@ -50,7 +50,6 @@ const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
             activeSpeechBubble.set(`Good job you found ${minigames.telescope.islandToFind.name}, not bad for a landlubber!`)
             completeGame()
         } else {
-            //todo add some effect for wrong answer
             activeSpeechBubble.set(
                 `WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${minigames.telescope.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`
             )
