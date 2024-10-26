@@ -42,8 +42,9 @@ const randomIslandPosition = () => {
 }
 
 const islandsState = [
-    { name: "Treasure Island", path: "./islandOne.png", gridPosition: randomIslandPosition() },
-    { name: "Skull Island", path: "./islandTwo.png", gridPosition: randomIslandPosition() }
+    { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
+    { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
+    { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() }
 ]
 
 const gamesCompletedState = [
