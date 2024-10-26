@@ -1,5 +1,5 @@
-import { useGameState } from "../game-state"
-import { cn } from "../util"
+import { useGameState } from "../../game-state"
+import { cn } from "../../util"
 
 const width = 20
 const height = 9

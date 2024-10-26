@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
-import { useAudio } from "../audio/AudioProvider.tsx"
-import { useGameState } from "../game-state.tsx"
-import { GamesCompletedState } from "../types/games-completed-state.ts"
-import { IslandState } from "../types/islands-state.ts"
+import { useAudio } from "../../audio/AudioProvider.tsx"
+import { useGameState } from "../../game-state.tsx"
+import { GamesCompletedState } from "../../types/games-completed-state.ts"
+import { IslandState } from "../../types/islands-state.ts"
 import { TelescopeGrid } from "./telescopeGrid.tsx"
 
 const AUDIO_FIND_ISLAND = "telescope/find-island"
