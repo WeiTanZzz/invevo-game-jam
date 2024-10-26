@@ -32,7 +32,6 @@ export const Speech = () => {
                 <p className="text-xl font-medium text-gray-800">
                     {selectedSpeech}
                 </p>
-                {/* Speech Bubble Tail */}
                 <div className="absolute left-0 bottom-0 transform translate-y-full -ml-4 w-0 h-0 border-t-8 border-t-gray-300 border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
                 <div className="absolute left-0 bottom-0 transform translate-y-full -ml-3 w-0 h-0 border-t-8 border-t-white border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
             </div>
