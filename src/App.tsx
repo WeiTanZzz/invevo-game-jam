@@ -1,4 +1,3 @@
-import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { useGameState } from "./game-state"
 import { Inventory } from "./inventory/inventory.tsx"
@@ -7,44 +6,11 @@ import { GAMES } from "./mini-games/games.tsx"
 import { Overlay } from "./overlay/overlay.tsx"
 import { Speech } from "./overlay/speech.tsx"
 
-type GameButtonProps = {
-    changeGameHandler: () => void
-    text: string
-}
-
-const GameButton = ({ changeGameHandler, text }: GameButtonProps) => {
-    return (
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={changeGameHandler}>
-            {text}
-        </button>
-    )
-}
-
 function App() {
-    const audioManager = useAudio()
     const { activeMiniGame } = useGameState()
 
     return (
         <DragAndDropProvider>
-            <div>
-                {GAMES.map(game => {
-                    return (
-                        <GameButton
-                            key={game.name}
-                            changeGameHandler={() => {
-                                if (activeMiniGame.get !== game.name) {
-                                    audioManager.setBGM(game.music)
-                                    activeMiniGame.set(game.name)
-                                } else {
-                                    activeMiniGame.set(undefined)
-                                    audioManager.toggleBackgroundPlayPause()
-                                }
-                            }}
-                            text={game.name}
-                        />
-                    )
-                })}
-            </div>
             <Overlay>
                 <Speech />
             </Overlay>

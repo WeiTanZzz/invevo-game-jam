@@ -8,14 +8,14 @@ export const AUDIO_FIND_ISLAND = "telescope/find-island"
 
 export const TelescopeMiniGame = () => {
     const [checkingMap, setCheckingMap] = useState(false)
-    const { currentDay } = useGameState()
+    const { minigames } = useGameState()
 
     return (
         <div>
             <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                 {checkingMap ? "Check Telescope" : "Check legend"}
             </button>
-            {checkingMap ? <TelescopeMap islandToFind={currentDay.islandToFind} /> : <TelescopeMiniGameContent />}
+            {checkingMap ? <TelescopeMap islandToFind={minigames.telescope.islandToFind} /> : <TelescopeMiniGameContent />}
         </div>
     )
 }
@@ -30,13 +30,13 @@ const TelescopeMap = ({ islandToFind }: { islandToFind: IslandState }) => {
 }
 
 const TelescopeMiniGameContent = () => {
-    const { currentDay, activeSpeechBubble } = useGameState()
+    const { minigames, activeSpeechBubble } = useGameState()
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const audio = useAudio()
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
-        activeSpeechBubble.set(`Use your telescope to find ${currentDay.islandToFind.name}, use the legend for assistance.`)
+        activeSpeechBubble.set(`Use your telescope to find ${minigames.telescope.islandToFind.name}, use the legend for assistance.`)
 
         audio.addEffect(AUDIO_FIND_ISLAND, "/audio/effect/find-island.mp3")
         audio.setBGM("/audio/bgm/sailing.mp3")

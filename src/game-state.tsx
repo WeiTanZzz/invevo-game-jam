@@ -4,22 +4,25 @@ import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
 import { ItemState } from "./types/item-state"
 
-const generateMinigames = (amount: number) => {
-    const minigames = [...GAMES]
-    const selectedMinigames = []
-    for (let i = 0; i < amount; i++) {
-        const index = Math.floor(Math.random() * minigames.length)
-        selectedMinigames.push(minigames[index])
-        minigames.splice(index, 1)
-    }
-    return selectedMinigames
-}
+const randomGames = (amount: number) =>
+    Array.from({ length: amount }).map(() => {
+        const index = Math.floor(Math.random() * GAMES.length)
+        return GAMES[index]
+    })
 
 const randomIslandPosition = () => {
     return { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 9) }
 }
 
-const islandsState = [
+type IslandState = {
+    name: string
+    path: string
+    gridPosition: {
+        x: number
+        y: number
+    }
+}
+const islandsState = (): IslandState[] => [
     { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
     { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
     { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() },
@@ -32,53 +35,17 @@ const islandsState = [
     { name: "Target Island", path: "./Islands/target_island.png", gridPosition: randomIslandPosition() }
 ]
 
-const getDailyIsland = () => {
-    const index = Math.floor(Math.random() * islandsState.length)
-
-    return islandsState[index]
+const getDailyIsland = (islands: IslandState[]) => {
+    const index = Math.floor(Math.random() * islands.length)
+    return islands[index]
 }
 
 const daySpecifications = [
-    {
-        day: "Monday",
-        index: 0,
-        timer: 60,
-        minigames: generateMinigames(1),
-        islandToFind: getDailyIsland(),
-        islands: islandsState
-    },
-    {
-        day: "Tuesday",
-        index: 1,
-        timer: 50,
-        minigames: generateMinigames(5),
-        islandToFind: getDailyIsland(),
-        islands: islandsState
-    },
-    {
-        day: "Wednesday",
-        index: 2,
-        timer: 40,
-        minigames: generateMinigames(5),
-        islandToFind: getDailyIsland(),
-        islands: islandsState
-    },
-    {
-        day: "Thursday",
-        index: 3,
-        timer: 30,
-        minigames: generateMinigames(6),
-        islandToFind: getDailyIsland(),
-        islands: islandsState
-    },
-    {
-        day: "Friday",
-        index: 4,
-        timer: 20,
-        minigames: generateMinigames(10),
-        islandToFind: getDailyIsland(),
-        islands: islandsState
-    }
+    { day: "Monday", index: 0, timer: 60, minigames: randomGames(1) },
+    { day: "Tuesday", index: 1, timer: 50, minigames: randomGames(5) },
+    { day: "Wednesday", index: 2, timer: 40, minigames: randomGames(5) },
+    { day: "Thursday", index: 3, timer: 30, minigames: randomGames(6) },
+    { day: "Friday", index: 4, timer: 20, minigames: randomGames(10) }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -108,6 +75,26 @@ type GameState = {
     }
     currentDay: (typeof daySpecifications)[number]
     daySpecifications: typeof daySpecifications
+    minigames: MinigamesBaseState
+}
+
+type MinigamesBaseState = {
+    telescope: {
+        islandToFind: IslandState
+        islands: IslandState[]
+    }
+}
+
+const buildMinigamesBaseState = () => {
+    const islands = islandsState()
+    const baseState: MinigamesBaseState = {
+        telescope: {
+            islandToFind: getDailyIsland(islands),
+            islands
+        }
+    }
+
+    return baseState
 }
 
 const GameStateContext = createContext<
@@ -132,10 +119,13 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
     const setActiveMiniGameWithMusic = (game: (typeof GAMES)[number]["name"] | undefined) => {
+        console.log(game, activeMiniGame)
+        if (activeMiniGame === game) return
         setActiveMiniGame(game)
-        audio.setBGM(GAMES.find(g => g.name === game)?.music ?? "/audio/bgm/sailing.mp3")
+        audio.setBGM(GAMES.find(g => g.name === game)?.music)
     }
 
+    const [minigames, setMinigames] = useState<MinigamesBaseState>(buildMinigamesBaseState())
     const [items, setItems] = useState<ItemState[]>([
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
@@ -143,7 +133,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [activeSpeechBubble, setActiveSpeechBubble] = useState<string>("")
 
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
-    const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[0]>(daySpecifications[0])
+    const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
     const move = (direction: MoveDirection) => {
         console.log(gamesCompleted)
@@ -152,6 +142,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             const newY = direction === "up" ? p.y - 1 : direction === "down" ? p.y + 1 : p.y
 
             const trigger = triggerCells.find(cell => cell.x === newX && cell.y === newY)
+            console.log(trigger)
             if (trigger !== undefined && !gamesCompleted.some(game => game === trigger.name)) {
                 setActiveMiniGameWithMusic(trigger.name)
             } else {
@@ -180,6 +171,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const startDay = () => {
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
+        setMinigames(buildMinigamesBaseState())
         setActiveSpeechBubble(`welcome to a new day, it's ${currentDay.day} and you have ${currentDay.minigames.length} tasks to complete.`)
     }
 
@@ -226,7 +218,8 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 nextDay: nextDay,
                 completeGame: completeMinigame,
                 currentDay,
-                daySpecifications
+                daySpecifications,
+                minigames
             }}
         >
             {children}
