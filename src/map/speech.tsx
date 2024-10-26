@@ -4,7 +4,6 @@ import { useGameState } from "../game-state"
 export const Speech = () => {
     const { islandToFind } = useGameState()
 
-    // Array of different speech templates
     const speeches = [
         `"Listen up, crew! Today, we're setting sail for ${islandToFind.name}. It's going to be a rough journey, but the treasure awaits those who dare!"`,
         `"All hands on deck! We're charting a course for ${islandToFind.name}. The winds are fierce, but fortune favors the brave!"`,
@@ -18,7 +17,7 @@ export const Speech = () => {
         `"Our destination is set: ${islandToFind.name}. Let nothing stand in our way—glory and riches await!"`
     ]
 
-    // Randomly select a speech
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const selectedSpeech = useMemo(() => speeches[Math.floor(Math.random() * speeches.length)], [islandToFind])
 
     return (
@@ -29,8 +28,6 @@ export const Speech = () => {
             </div>
             <div className="bg-white p-4 rounded-lg shadow-lg w-3/4 border-2 border-gray-300 relative">
                 <p className="text-xl font-medium text-gray-800">{selectedSpeech}</p>
-                <div className="absolute left-0 bottom-0 transform translate-y-full -ml-4 w-0 h-0 border-t-8 border-t-gray-300 border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
-                <div className="absolute left-0 bottom-0 transform translate-y-full -ml-3 w-0 h-0 border-t-8 border-t-white border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
             </div>
         </div>
     )
