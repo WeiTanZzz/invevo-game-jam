@@ -1,34 +1,70 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { TelescopeMiniGame } from "./TelescopeMiniGame"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
 import { Inventory } from "./inventory/inventory.tsx"
 import { Map } from "./map/map.tsx"
+import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game.tsx"
+
+type GameButtonProps = {
+    changeGameHandler: () => void
+    text: string
+}
+
+const GameButton = ({ changeGameHandler, text }: GameButtonProps) => {
+    return (
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={changeGameHandler}>
+            {text}
+        </button>
+    )
+}
+
+const GAMES: {
+    name: string
+    component: React.ReactNode
+    bgm: string
+}[] = [
+    {
+        name: "Telescope Mini Game",
+        component: <TelescopeMiniGame />,
+        bgm: "/audio/bgm/sailing.mp3"
+    },
+    {
+        name: "Sing to Crews",
+        component: <SingToCrewsMiniGame />,
+        bgm: "/audio/bgm/board.mp3"
+    }
+]
 
 function App() {
     const audioManager = useAudio()
-    const [inTelescopeMiniGame, setInTelescopeMiniGame] = useState(false)
+    const [playingMiniGame, setPlayingMiniGame] = useState(false)
+    const [miniGame, setMiniGame] = useState<React.ReactNode>(<TelescopeMiniGame />)
 
     return (
         <GameStateProvider>
             <DragAndDropProvider>
-                <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-                    onClick={() => {
-                        if (!inTelescopeMiniGame) {
-                            audioManager.setBGM("/audio/bg/sailing.mp3")
-                        } else {
-                            audioManager.toggleBackgroundPlayPause()
-                        }
+                <div>
+                    {GAMES.map(game => (
+                        <GameButton
+                            key={game.name}
+                            changeGameHandler={() => {
+                                if (!playingMiniGame) {
+                                    audioManager.setBGM(game.bgm)
+                                    setMiniGame(game.component)
+                                } else {
+                                    audioManager.toggleBackgroundPlayPause()
+                                }
 
-                        setInTelescopeMiniGame(!inTelescopeMiniGame)
-                    }}
-                >
-                    {inTelescopeMiniGame ? "exit telescop mini game" : "enter Telescope Mini Game "}
-                </button>
-                {inTelescopeMiniGame ? (
-                    <TelescopeMiniGame />
+                                setPlayingMiniGame(!playingMiniGame)
+                            }}
+                            text={game.name}
+                        />
+                    ))}
+                </div>
+                {playingMiniGame ? (
+                    <>{miniGame}</>
                 ) : (
                     <>
                         <Map />
