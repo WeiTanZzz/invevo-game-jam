@@ -1,6 +1,8 @@
+import { useAudio } from "../../audio/AudioProvider"
 import { useGameState } from "../../game-state"
 import { IslandState } from "../../types/islands-state"
 import { cn } from "../../util"
+import { AUDIO_FIND_ISLAND } from "./TelescopeMiniGame"
 
 const width = 20
 const height = 9
@@ -27,13 +29,24 @@ export const TelescopeGrid = () => {
 }
 
 const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
+    const { islandToFind, activeMiniGame, gamesCompleted, activeSpeechBubble } = useGameState()
+    const audio = useAudio()
+
+    const onClick = () => {
+        if (imageToRender.name === islandToFind.name) {
+            audio.playEffect(AUDIO_FIND_ISLAND)
+            activeSpeechBubble.set(`Good job you found ${islandToFind.name}, not bad for a landlubber!`)
+            gamesCompleted.add("Telescope Mini Game")
+            activeMiniGame.set(undefined)
+        } else {
+            //todo add some effect for wrong answer
+            activeSpeechBubble.set(`WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`)
+        }
+    }
+
     return (
         <div className={cn("bg-blue-600 w-1/12 grow aspect-square items-center justify-center")}>
-            {
-                <span>
-                    <img className="bg-cover bg-" src={imageToRender.path} alt={imageToRender.name} aria-label="" />
-                </span>
-            }
+            <img onClick={onClick} className="bg-cover" src={imageToRender.path} alt={imageToRender.name} />
         </div>
     )
 }

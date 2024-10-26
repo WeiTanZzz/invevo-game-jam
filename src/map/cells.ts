@@ -1,3 +1,5 @@
+import { GAMES } from "../mini-games/games"
+
 export const GRID_WIDTH = 31
 export const GRID_HEIGHT = 11
 
@@ -19,10 +21,9 @@ const edgeCells: Coordinate[] = [
 
 const innerCells: Coordinate[] = [
     { x: 9, y: 11 },
-    { x: 10, y: 11 },
-    { x: 14, y: 6 }
+    { x: 10, y: 11 }
 ]
 
-//const triggerCells: Coordinate & { name: GAMES[number]["name"] })[] = [
+export const triggerCells: (Coordinate & { name: (typeof GAMES)[number]["name"] })[] = [{ x: 14, y: 6, name: "Telescope Mini Game" }]
 
 export const hiddenCells = [...edgeCells, ...innerCells] as const

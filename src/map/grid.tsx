@@ -1,24 +1,8 @@
-import { useLayoutEffect } from "react"
 import { useGameState } from "../game-state"
 import { cn } from "../util"
-import { Coordinate, GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./cells"
+import { Coordinate, GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./cells"
 
 export const Grid = () => {
-    const { grid } = useGameState()
-
-    const onKeyPress = (e: KeyboardEvent) => {
-        if (e.key === "a") grid.move("left")
-        if (e.key === "d") grid.move("right")
-        if (e.key === "w") grid.move("up")
-        if (e.key === "s") grid.move("down")
-    }
-
-    useLayoutEffect(() => {
-        window.addEventListener("keydown", onKeyPress)
-        return () => window.removeEventListener("keydown", onKeyPress)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
     return (
         <div className="flex flex-1 flex-col items-center justify-center">
             {new Array(GRID_HEIGHT).fill(1).map((_, y) => (
@@ -53,12 +37,15 @@ const Cell = ({ x, y }: Coordinate) => {
         if (yDist > 0) grid.move("up")
     }
 
+    const isTriggerCell = triggerCells.some(cell => cell.x === x && cell.y === y)
+
     return (
         <div
             onClick={onClickCell}
             className={cn(
                 "w-1/12 grow aspect-square items-center justify-center shadow-cell-base",
                 isCurrentCell && "shadow-cell-current",
+                isTriggerCell && "shadow-cell-trigger",
                 canMoveToCell ? "hover:shadow-cell-available" : !isCurrentCell && "hover:shadow-cell-unavailable",
                 isCellHidden && "shadow-none hover:shadow-none",
                 isCurrentCell && grid.lastMove === "right" && "rotate-90",
