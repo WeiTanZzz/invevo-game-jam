@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { FrequencyAnalyser } from "../audio/FrequencyAnalyser.ts"
+import { FrequencyAnalyser } from "../../audio/FrequencyAnalyser";
 
 const PITCHES = ["C4", "D4", "E4", "F4", "G4", "A4", "B4"]
 
