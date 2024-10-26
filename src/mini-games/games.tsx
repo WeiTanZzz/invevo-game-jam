@@ -1,4 +1,4 @@
-import SingToCrewsMiniGame from "../sing-to-crews/sing-to-crews-mini-game"
+import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game"
 import { TelescopeMiniGame } from "./telescopeMinigame/TelescopeMiniGame"
 
 export const GAMES: {

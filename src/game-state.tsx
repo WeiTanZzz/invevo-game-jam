@@ -37,7 +37,11 @@ const islandsState = [
     { name: "Skull Island", path: "./islandTwo.png", gridPosition: randomIslandPosition() }
 ]
 
-const gamesCompletedState = [{ name: "Telescope Mini Game", completed: false }]
+const gamesCompletedState = [
+    {
+        "Telescope Mini Game": { completed: false }
+    }
+]
 
 const getDailyIsland = () => {
     const index = Math.floor(Math.random() * islandsState.length)
@@ -109,8 +113,7 @@ const defaultGameState = {
     },
     gamesCompleted: [
         {
-            name: "Telescope Mini Game",
-            completed: false
+            "Telescope Mini Game": { completed: false }
         }
     ],
     islands: islandsState,

@@ -62,7 +62,7 @@ const UseTelescopeMiniGame = ({
                         audio.playEffect(AUDIO_FIND_ISLAND)
                         const currentFinishedGames = gamesCompleted.get
                         console.log("currentFinishedGames", currentFinishedGames)
-                        gamesCompleted.set([...currentFinishedGames, { name: "Telescope Mini Game", completed: true }])
+                        gamesCompleted.set([...currentFinishedGames, { "Telescope Mini Game": { completed: true } }])
                     } else {
                         //todo add some effect for wrong answer
                     }

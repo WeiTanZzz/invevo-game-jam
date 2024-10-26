@@ -1,4 +1,5 @@
 export type GamesCompletedState = {
-    name: string
-    completed: boolean
+    [name: string]: {
+        completed: boolean
+    }
 }
