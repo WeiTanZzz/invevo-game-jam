@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { TelescopeMiniGame } from "./TelescopeMiniGame"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
 import { PlayerInventory } from "./inventory/player-inventory.tsx"
 import { Grid } from "./map/grid.tsx"
+import { TelescopeMiniGame } from "./telescopeMinigame/TelescopeMiniGame.tsx"
 
 function App() {
     const audioManager = useAudio()
