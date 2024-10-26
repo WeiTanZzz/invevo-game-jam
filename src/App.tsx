@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import { TelescopeMiniGame } from "./TelescopeMiniGame"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
 import { Inventory } from "./inventory/inventory.tsx"
 import { Map } from "./map/map.tsx"
 import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game.tsx"
+import { TelescopeMiniGame } from "./telescopeMinigame/TelescopeMiniGame.tsx"
 
 type GameButtonProps = {
     changeGameHandler: () => void

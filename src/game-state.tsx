@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH } from "./map/grid"
+import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -15,9 +16,9 @@ type GameState = {
         lastMove: MoveDirection
     }
     islands: {
-        gridPosition: { x: number; y: number }
-        island: string
-    }[]
+        get: IslandState[]
+        set: (items: IslandState[]) => void
+    }
     islandToFind: string
 }
 
@@ -43,13 +44,29 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
     ])
+    const [islands, setIslands] = useState<IslandState[]>([
+        {
+            island: "./islandOne.png",
+            gridPosition: {
+                x: Math.floor(Math.random() * 20),
+                y: Math.floor(Math.random() * 9)
+            }
+        },
+        {
+            island: "./islandTwo.png",
+            gridPosition: {
+                x: Math.floor(Math.random() * 20),
+                y: Math.floor(Math.random() * 9)
+            }
+        }
+    ])
 
     const [x, setX] = useState<number>(defaultGameState.grid.x)
     const [y, setY] = useState<number>(defaultGameState.grid.y)
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
     const move = (direction: "up" | "down" | "left" | "right") => {
         if (direction === "up") {
-            setY(v => (1 <= v - 1 && v - 1 <= GRID_HEIGHT ? v - 1 : v)) 
+            setY(v => (1 <= v - 1 && v - 1 <= GRID_HEIGHT ? v - 1 : v))
             setLastMove("up")
         }
         if (direction === "down") {
@@ -82,16 +99,8 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                     move,
                     lastMove
                 },
-                reset: reset
-            }}
-        >
-            {children}
-        </GameStateContext.Provider>
-        <GameStateContext.Provider
-            value={{
-                grid: { x: { get: x, set: setX }, y: { get: y, set: setY } },
-                islands: defaultGameState.islands,
                 islandToFind: defaultGameState.islandToFind,
+                islands: { get: islands, set: setIslands },
                 reset: reset
             }}
         >
@@ -105,9 +114,6 @@ const defaultGameState = {
         x: 1,
         y: 1,
         lastMove: "right"
-    },
-} as const
-        y: 1
     },
     islands: [
         {
@@ -126,4 +132,4 @@ const defaultGameState = {
         }
     ],
     islandToFind: getDailyIsland()
-}
+} as const

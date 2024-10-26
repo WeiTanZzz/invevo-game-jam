@@ -12,7 +12,7 @@ export const TelescopeGrid = () => {
             {new Array(height).fill(1).map((_, y) => (
                 <div className="flex flex-row">
                     {new Array(width).fill(1).map((_, x) => {
-                        const island = islands.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
+                        const island = islands.get.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
                         if (island) {
                             console.log(island, "island")
                             return <Cell isIslandToFind={islandToFind} imageToRender={island.island} />
@@ -26,7 +26,7 @@ export const TelescopeGrid = () => {
     )
 }
 
-const Cell = ({ imageToRender, isIslandToFind }: { imageToRender: string; isIslandToFind: string }) => {
+const Cell = ({ imageToRender }: { imageToRender: string; isIslandToFind: string }) => {
     const onClickCell = () => {
         console.log("clicked")
     }
