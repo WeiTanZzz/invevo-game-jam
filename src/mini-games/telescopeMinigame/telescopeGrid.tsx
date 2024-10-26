@@ -15,17 +15,30 @@ export const TelescopeGrid = () => {
             {new Array(height).fill(1).map((_, y) => (
                 <div className="flex flex-row flex-1 grow w-full">
                     {new Array(width).fill(1).map((_, x) => {
+                        checkIslandsAreOnUniqueGridPositions(currentDay)
+
                         const island = currentDay.islands.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
                         if (island) {
                             return <Cell imageToRender={island} />
                         } else {
-                            return <div className="bg-blue-600 w-1/12 grow aspect-square items-center justify-center " />
+                            return <div className="bg-blue-600 w-1/12 grow aspect-square items-center justify-center" />
                         }
                     })}
                 </div>
             ))}
         </div>
     )
+}
+
+const checkIslandsAreOnUniqueGridPositions = (currentDay: { islands: IslandState[] }) => {
+    currentDay.islands.forEach((island, index) => {
+        currentDay.islands.forEach((otherIsland, otherIndex) => {
+            if (index !== otherIndex && island.gridPosition.x === otherIsland.gridPosition.x && island.gridPosition.y === otherIsland.gridPosition.y) {
+                island.gridPosition = { x: Math.floor(Math.random() * width), y: Math.floor(Math.random() * height) }
+                checkIslandsAreOnUniqueGridPositions(currentDay)
+            }
+        })
+    })
 }
 
 const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
@@ -38,8 +51,9 @@ const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
             activeSpeechBubble.set(`Good job you found ${currentDay.islandToFind.name}, not bad for a landlubber!`)
             completeGame()
         } else {
-            //todo add some effect for wrong answer
-            activeSpeechBubble.set(`WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${currentDay.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`)
+            activeSpeechBubble.set(
+                `WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${currentDay.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`
+            )
         }
     }
 
