@@ -43,7 +43,14 @@ const randomIslandPosition = () => {
 const islandsState = [
     { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
     { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
-    { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() }
+    { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() },
+    { name: "Calm House Island", path: "./Islands/Calm_house.png", gridPosition: randomIslandPosition() },
+    { name: "Dracula Island", path: "./Islands/dracula_island.png", gridPosition: randomIslandPosition() },
+    { name: "Ghost Island", path: "./Islands/Ghost_island.png", gridPosition: randomIslandPosition() },
+    { name: "Nessy", path: "./Islands/Nessy.png", gridPosition: randomIslandPosition() },
+    { name: "Pirate Hat Island", path: "./Islands/pirate_hat_island.png", gridPosition: randomIslandPosition() },
+    { name: "Star Island", path: "./Islands/star_island.png", gridPosition: randomIslandPosition() },
+    { name: "Target Island", path: "./Islands/target_island.png", gridPosition: randomIslandPosition() }
 ]
 
 const getDailyIsland = () => {
