@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useAudio } from "../audio/AudioProvider.tsx"
 import { useGameState } from "../game-state.tsx"
+import { GamesCompletedState } from "../types/games-completed-state.ts"
 import { IslandState } from "../types/islands-state.ts"
 import { TelescopeGrid } from "./telescopeGrid.tsx"
 
@@ -8,14 +9,14 @@ const AUDIO_FIND_ISLAND = "telescope/find-island"
 
 export const TelescopeMiniGame = () => {
     const [checkingMap, setCheckingMap] = useState(false)
-    const { islandToFind } = useGameState()
+    const { islandToFind, gamesCompleted } = useGameState()
 
     return (
         <div>
             <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                 {checkingMap ? "Check Telescope" : "Check legend"}
             </button>
-            {checkingMap ? <UseMap islandToFind={islandToFind} /> : <UseTelescopeMiniGame islandToFind={islandToFind} />}
+            {checkingMap ? <UseMap islandToFind={islandToFind} /> : <UseTelescopeMiniGame gamesCompleted={gamesCompleted} islandToFind={islandToFind} />}
         </div>
     )
 }
@@ -27,7 +28,16 @@ const UseMap = ({ islandToFind }: { islandToFind: IslandState }) => {
     )
 }
 
-const UseTelescopeMiniGame = ({ islandToFind }: { islandToFind: IslandState }) => {
+const UseTelescopeMiniGame = ({
+    islandToFind,
+    gamesCompleted
+}: {
+    islandToFind: IslandState
+    gamesCompleted: {
+        get: GamesCompletedState[]
+        set: (items: GamesCompletedState[]) => void
+    }
+}) => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const audio = useAudio()
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -50,7 +60,11 @@ const UseTelescopeMiniGame = ({ islandToFind }: { islandToFind: IslandState }) =
                     const src = (targetElement as HTMLImageElement).alt
                     if (src === islandToFind.path) {
                         audio.playEffect(AUDIO_FIND_ISLAND)
+                        const currentFinishedGames = gamesCompleted.get
+                        console.log("currentFinishedGames", currentFinishedGames)
+                        gamesCompleted.set([...currentFinishedGames, { name: "Telescope Mini Game", completed: true }])
                     } else {
+                        //todo add some effect for wrong answer
                     }
                 }
             }
