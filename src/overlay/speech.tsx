@@ -19,9 +19,8 @@ export const Speech = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const selectedSpeech = useMemo(() => speeches[Math.floor(Math.random() * speeches.length)], [islandToFind])
-
     return (
-        <div className="text-left absolute w-full h-full mt-32 ml-10 flex items-start">
+        <>
             <div className="mr-4 text-center">
                 <img src="./captain.png" className="w-50 h-20" alt="Captain" />
                 <span className="text-lg font-serif italic text-blue-900 mt-2 block">Captain Ghost Beard</span>
@@ -29,6 +28,6 @@ export const Speech = () => {
             <div className="bg-white p-4 rounded-lg shadow-lg w-3/4 border-2 border-gray-300 relative">
                 <p className="text-xl font-medium text-gray-800">{selectedSpeech}</p>
             </div>
-        </div>
+        </>
     )
 }

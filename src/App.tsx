@@ -4,6 +4,8 @@ import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { GameStateProvider } from "./game-state"
 import { Inventory } from "./inventory/inventory.tsx"
 import { Map } from "./map/map.tsx"
+import { Overlay } from "./overlay/overlay.tsx"
+import { Speech } from "./overlay/speech.tsx"
 import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game.tsx"
 import { TelescopeMiniGame } from "./telescopeMinigame/TelescopeMiniGame.tsx"
 
@@ -63,6 +65,9 @@ function App() {
                         />
                     ))}
                 </div>
+                <Overlay>
+                    <Speech />
+                </Overlay>
                 {playingMiniGame ? (
                     <>{miniGame}</>
                 ) : (
