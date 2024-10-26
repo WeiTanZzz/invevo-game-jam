@@ -6,9 +6,18 @@ type GameState = {
         y: { get: number; set: (y: number) => void }
     }
     islands: {
-        gridPosition: number
+        gridPosition: { x: number; y: number }
         island: string
     }[]
+    islandToFind: string
+}
+
+export const getDailyIsland = () => {
+    //todo get a random island to find
+    const islands = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+    const index = Math.floor(Math.random() * islands.length)
+
+    return islands[index]
 }
 
 const GameStateContext = createContext<(GameState & { reset: () => void }) | undefined>(undefined)
@@ -32,6 +41,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 grid: { x: { get: x, set: setX }, y: { get: y, set: setY } },
                 islands: defaultGameState.islands,
+                islandToFind: defaultGameState.islandToFind,
                 reset: reset
             }}
         >
@@ -47,12 +57,19 @@ const defaultGameState = {
     },
     islands: [
         {
-            gridPosition: Math.floor(Math.random() * 20 * 10),
-            island: "./island To Find.png"
+            gridPosition: {
+                x: Math.floor(Math.random() * 20),
+                y: Math.floor(Math.random() * 9)
+            },
+            island: "./islandTwo.png"
         },
         {
-            gridPosition: Math.floor(Math.random() * 20 * 10),
-            island: "./island To Find two.png"
+            gridPosition: {
+                x: Math.floor(Math.random() * 20),
+                y: Math.floor(Math.random() * 9)
+            },
+            island: "./islandOne.png"
         }
-    ]
+    ],
+    islandToFind: getDailyIsland()
 }

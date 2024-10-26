@@ -5,24 +5,20 @@ const width = 20
 const height = 9
 
 export const TelescopeGrid = () => {
-    const { islands } = useGameState()
+    const { islands, islandToFind } = useGameState()
 
     return (
         <div className="flex flex-col grow">
             {new Array(height).fill(1).map((_, y) => (
                 <div className="flex flex-row">
                     {new Array(width).fill(1).map((_, x) => {
-                        const xCord = x + 1
-                        const yCord = y + 1
-                        const idx = xCord * yCord
-
-                        islands.some(island => {
-                            if (island.gridPosition === idx) {
-                                console.log(island, "hefwnsfw")
-                                return <Cell key={idx} idx={idx} imageToRender={island.island} />
-                            }
-                        })
-                        return <Cell key={idx} idx={idx} imageToRender="./sea.png" />
+                        const island = islands.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
+                        if (island) {
+                            console.log(island, "island")
+                            return <Cell isIslandToFind={islandToFind} imageToRender={island.island} />
+                        } else {
+                            return <div className="size-24 bg-blue-600 items-center justify-center" />
+                        }
                     })}
                 </div>
             ))}
@@ -30,16 +26,16 @@ export const TelescopeGrid = () => {
     )
 }
 
-const Cell = ({ idx, imageToRender }: { idx: number; imageToRender: string }) => {
+const Cell = ({ imageToRender, isIslandToFind }: { imageToRender: string; isIslandToFind: string }) => {
     const onClickCell = () => {
-        console.log("Clicked on cell:", idx)
+        console.log("clicked")
     }
 
     return (
-        <div onClick={onClickCell} className={cn("size-24 items-center justify-center border border-red hover:bg-zinc-50")}>
+        <div onClick={onClickCell} className={cn("size-24 bg-blue-600 items-center justify-center")}>
             {
                 <span>
-                    <img src={imageToRender} alt="cell image" />
+                    <img className="bg-cover bg-" src={imageToRender} alt="cell image" />
                 </span>
             }
         </div>

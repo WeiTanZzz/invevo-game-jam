@@ -18,8 +18,9 @@ export const TelescopeMiniGame = () => {
 }
 const UseMap = () => {
     return (
+        //todo make the daily reset get a different island to find
         <div className="flex flex-col items-center justify-center ">
-            <img src="./island To Find.png" alt="map" className="h-1/3 w-1/3" />
+            <img src="./islandTwo.png" alt="map" className="h-1/3 w-1/3" />
         </div>
     )
 }
@@ -54,19 +55,18 @@ const UseTelescopeMiniGame = () => {
         }
     }, [audio])
 
-    // render grid with islands in the cells
-
     return (
-        // <div className="cursor-none relative w-screen h-screen bg-cover bg-center overflow-hidden">
-        <div>
-            <canvas ref={canvasRef} style={{ display: "none" }} />
-            <TelescopeGrid />
-            <div
-                // className="absolute inset-0 bg-black"
-                style={{
-                    maskImage: `radial-gradient(circle at ${position.x}px ${position.y}px, transparent 50px, black 75px)`
-                }}
-            />
+        <div className="cursor-none relative w-screen h-screen bg-cover bg-center overflow-hidden">
+            <div>
+                <canvas ref={canvasRef} style={{ display: "none" }} />
+                <TelescopeGrid />
+                <div
+                    className="absolute inset-0 bg-black"
+                    style={{
+                        maskImage: `radial-gradient(circle at ${position.x}px ${position.y}px, transparent 50px, black 75px)`
+                    }}
+                />
+            </div>
         </div>
     )
 }
