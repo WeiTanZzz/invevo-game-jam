@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react"
+import { createContext, ReactNode, useContext, useLayoutEffect, useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
 import { ItemState } from "./types/item-state"
@@ -19,16 +19,16 @@ const randomIslandPosition = () => {
 }
 
 const islandsState = [
-        { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
-        { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
-        { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() },
-        { name: "Calm House Island", path: "./Islands/Calm_house.png", gridPosition: randomIslandPosition() },
-        { name: "Dracula Island", path: "./Islands/dracula_island.png", gridPosition: randomIslandPosition() },
-        { name: "Ghost Island", path: "./Islands/Ghost_island.png", gridPosition: randomIslandPosition() },
-        { name: "Nessy", path: "./Islands/Nessy.png", gridPosition: randomIslandPosition() },
-        { name: "Pirate Hat Island", path: "./Islands/pirate_hat_island.png", gridPosition: randomIslandPosition() },
-        { name: "Star Island", path: "./Islands/star_island.png", gridPosition: randomIslandPosition() },
-        { name: "Target Island", path: "./Islands/target_island.png", gridPosition: randomIslandPosition() }
+    { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
+    { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
+    { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() },
+    { name: "Calm House Island", path: "./Islands/Calm_house.png", gridPosition: randomIslandPosition() },
+    { name: "Dracula Island", path: "./Islands/dracula_island.png", gridPosition: randomIslandPosition() },
+    { name: "Ghost Island", path: "./Islands/Ghost_island.png", gridPosition: randomIslandPosition() },
+    { name: "Nessy", path: "./Islands/Nessy.png", gridPosition: randomIslandPosition() },
+    { name: "Pirate Hat Island", path: "./Islands/pirate_hat_island.png", gridPosition: randomIslandPosition() },
+    { name: "Star Island", path: "./Islands/star_island.png", gridPosition: randomIslandPosition() },
+    { name: "Target Island", path: "./Islands/target_island.png", gridPosition: randomIslandPosition() }
 ]
 
 const getDailyIsland = () => {
@@ -74,8 +74,7 @@ type GameState = {
     daySpecifications: typeof daySpecifications
 }
 
-
-const GameStateContext = createContext<(GameState & { reset: () => void; nextDay: () => void, completeGame: () => void }) | undefined>(undefined)
+const GameStateContext = createContext<(GameState & { reset: () => void; nextDay: () => void; completeGame: () => void }) | undefined>(undefined)
 export const useGameState = () => {
     const context = useContext(GameStateContext)
     if (!context) {
@@ -135,10 +134,29 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const completeMinigame = () => {
-        setActiveSpeechBubble(`well done kids`)
         addCompletedGame([activeMiniGame ?? ""])
         setActiveMiniGame(undefined)
+
+        if(gamesCompleted.length === currentDay.minigames.length) {
+            setActiveSpeechBubble(`congratulations, you've completed all the tasks for today. Let's move on to the next day.`)
+            nextDay()
+        } else {
+            setActiveSpeechBubble(`congratulations, you've completed a task for today. You have ${currentDay.minigames.length - gamesCompleted.length} tasks left.`)
+        }
     }
+    const onKeyPress = (e: KeyboardEvent) => {
+        if (e.key === "a") move("left")
+        if (e.key === "d") move("right")
+        if (e.key === "w") move("up")
+        if (e.key === "s") move("down")
+    }
+
+    useLayoutEffect(() => {
+        startDay()
+
+        window.addEventListener("keydown", onKeyPress)
+        return () => window.removeEventListener("keydown", onKeyPress)
+    }, [])
 
     return (
         <GameStateContext.Provider
@@ -154,7 +172,9 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 activeSpeechBubble: { get: activeSpeechBubble, set: setActiveSpeechBubble },
                 reset: reset,
                 nextDay: nextDay,
-                completeGame: completeMinigame
+                completeGame: completeMinigame,
+                currentDay,
+                daySpecifications
             }}
         >
             {children}
