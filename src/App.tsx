@@ -30,24 +30,29 @@ function App() {
     return (
         <DragAndDropProvider>
             <div>
-                {GAMES.map(game =>
-                    gamesCompleted.get.find(gameCompleted => gameCompleted.name === game.name)?.completed ? null : (
-                        <GameButton
-                            key={game.name}
-                            changeGameHandler={() => {
-                                if (!playingMiniGame) {
-                                    audioManager.setBGM(game.bgm)
-                                    setMiniGame(game.component)
-                                } else {
-                                    audioManager.toggleBackgroundPlayPause()
-                                }
+                {GAMES.map(game => {
+                    if (gamesCompleted.get.find(gameCompleted => gameCompleted[game.name])?.completed) {
+                        setPlayingMiniGame(false)
+                        return null
+                    } else {
+                        return (
+                            <GameButton
+                                key={game.name}
+                                changeGameHandler={() => {
+                                    if (!playingMiniGame) {
+                                        audioManager.setBGM(game.bgm)
+                                        setMiniGame(game.component)
+                                    } else {
+                                        audioManager.toggleBackgroundPlayPause()
+                                    }
 
-                                setPlayingMiniGame(!playingMiniGame)
-                            }}
-                            text={game.name}
-                        />
-                    )
-                )}
+                                    setPlayingMiniGame(!playingMiniGame)
+                                }}
+                                text={game.name}
+                            />
+                        )
+                    }
+                })}
             </div>
             <Overlay>
                 <Speech />
