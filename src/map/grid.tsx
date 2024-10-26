@@ -44,9 +44,9 @@ const Cell = ({ x, y }: Coordinate) => {
 
     const isCellHidden = hiddenCells.some(cell => cell.x === x && cell.y === y)
 
-    const isCurrentCell = grid.x.get === x && grid.y.get === y
-    const xDist = grid.x.get - x
-    const yDist = grid.y.get - y
+    const isCurrentCell = grid.x === x && grid.y === y
+    const xDist = grid.x - x
+    const yDist = grid.y - y
     const canMoveToCell = !isCellHidden && !isCurrentCell && Math.abs(xDist) <= 1 && Math.abs(yDist) <= 1
 
     const onClickCell = () => {
@@ -75,7 +75,7 @@ const Cell = ({ x, y }: Coordinate) => {
     )
 }
 
-const hiddenCells: Coordinate[] = [
+export const hiddenCells: Coordinate[] = [
     ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: 1 })),
     ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: 2 })),
     ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH - i, y: 1 })),

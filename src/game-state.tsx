@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react"
-import { GRID_HEIGHT, GRID_WIDTH } from "./map/grid"
+import { GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./map/grid"
 import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
 
@@ -10,8 +10,8 @@ type GameState = {
         set: (items: ItemState[]) => void
     }
     grid: {
-        x: { get: number }
-        y: { get: number }
+        x: number
+        y: number
         move: (direction: MoveDirection) => void
         lastMove: MoveDirection
     }
@@ -51,28 +51,22 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     ])
     const [islands, setIslands] = useState<IslandState[]>(islandsState)
 
-    const [x, setX] = useState<number>(defaultGameState.grid.x)
-    const [y, setY] = useState<number>(defaultGameState.grid.y)
+    const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
     const move = (direction: "up" | "down" | "left" | "right") => {
-        if (direction === "up") {
-            setY(v => (1 <= v - 1 && v - 1 <= GRID_HEIGHT ? v - 1 : v))
-        }
-        if (direction === "down") {
-            setY(v => (1 <= v + 1 && v + 1 <= GRID_HEIGHT ? v + 1 : v))
-        }
-        if (direction === "left") {
-            setX(v => (1 <= v - 1 && v - 1 <= GRID_WIDTH ? v - 1 : v))
-        }
-        if (direction === "right") {
-            setX(v => (1 <= v + 1 && v + 1 <= GRID_WIDTH ? v + 1 : v))
-        }
+        setPos(p => {
+            const newX = direction === "left" ? p.x - 1 : direction === "right" ? p.x + 1 : p.x
+            const newY = direction === "up" ? p.y - 1 : direction === "down" ? p.y + 1 : p.y
+            const isInBounds =
+                newX >= 1 && newX <= GRID_WIDTH && newY >= 1 && newY <= GRID_HEIGHT && !hiddenCells.some(cell => cell.x === newX && cell.y === newY)
+            if (isInBounds) return { x: newX, y: newY }
+            return p
+        })
         setLastMove(direction)
     }
 
     const reset = () => {
-        setX(defaultGameState.grid.x)
-        setY(defaultGameState.grid.y)
+        setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
     }
 
@@ -81,8 +75,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 items: { get: items, set: setItems },
                 grid: {
-                    x: { get: x },
-                    y: { get: y },
+                    ...pos,
                     move,
                     lastMove
                 },
