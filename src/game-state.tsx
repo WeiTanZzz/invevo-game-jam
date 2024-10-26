@@ -66,20 +66,17 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const move = (direction: "up" | "down" | "left" | "right") => {
         if (direction === "up") {
             setY(v => (1 <= v - 1 && v - 1 <= GRID_HEIGHT ? v - 1 : v))
-            setLastMove("up")
         }
         if (direction === "down") {
             setY(v => (1 <= v + 1 && v + 1 <= GRID_HEIGHT ? v + 1 : v))
-            setLastMove("down")
         }
         if (direction === "left") {
             setX(v => (1 <= v - 1 && v - 1 <= GRID_WIDTH ? v - 1 : v))
-            setLastMove("left")
         }
         if (direction === "right") {
             setX(v => (1 <= v + 1 && v + 1 <= GRID_WIDTH ? v + 1 : v))
-            setLastMove("right")
         }
+        setLastMove(direction)
     }
 
     const reset = () => {
@@ -110,8 +107,8 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
 const defaultGameState = {
     grid: {
-        x: 1,
-        y: 1,
+        x: 2,
+        y: 6,
         lastMove: "right"
     },
     islands: [

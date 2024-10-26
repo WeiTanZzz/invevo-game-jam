@@ -18,6 +18,7 @@ export const Grid = () => {
     useLayoutEffect(() => {
         window.addEventListener("keydown", onKeyPress)
         return () => window.removeEventListener("keydown", onKeyPress)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -36,13 +37,17 @@ export const Grid = () => {
     )
 }
 
-const Cell = ({ x, y }: { x: number; y: number }) => {
+type Coordinate = { x: number; y: number }
+
+const Cell = ({ x, y }: Coordinate) => {
     const { grid } = useGameState()
+
+    const isCellHidden = hiddenCells.some(cell => cell.x === x && cell.y === y)
 
     const isCurrentCell = grid.x.get === x && grid.y.get === y
     const xDist = grid.x.get - x
     const yDist = grid.y.get - y
-    const canMoveToCell = !isCurrentCell && Math.abs(xDist) <= 1 && Math.abs(yDist) <= 1
+    const canMoveToCell = !isCellHidden && !isCurrentCell && Math.abs(xDist) <= 1 && Math.abs(yDist) <= 1
 
     const onClickCell = () => {
         if (!canMoveToCell) return
@@ -56,9 +61,10 @@ const Cell = ({ x, y }: { x: number; y: number }) => {
         <div
             onClick={onClickCell}
             className={cn(
-                "w-1/12 grow aspect-square items-center justify-center border",
-                isCurrentCell && "border-yellow-500",
-                canMoveToCell ? "hover:border-green-500" : !isCurrentCell && "hover:border-red-500",
+                "w-1/12 grow aspect-square items-center justify-center shadow-cell-base",
+                isCurrentCell && "shadow-cell-current",
+                canMoveToCell ? "hover:shadow-cell-available" : !isCurrentCell && "hover:shadow-cell-unavailable",
+                isCellHidden && "shadow-none hover:shadow-none",
                 isCurrentCell && grid.lastMove === "right" && "rotate-90",
                 isCurrentCell && grid.lastMove === "down" && "rotate-180",
                 isCurrentCell && grid.lastMove === "left" && "-rotate-90"
@@ -68,3 +74,17 @@ const Cell = ({ x, y }: { x: number; y: number }) => {
         </div>
     )
 }
+
+const hiddenCells: Coordinate[] = [
+    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: 1 })),
+    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: 2 })),
+    ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH - i, y: 1 })),
+    ...Array.from({ length: 3 }, (_, i) => ({ x: GRID_WIDTH - i, y: 2 })),
+    ...Array.from({ length: 2 }, (_, i) => ({ x: GRID_WIDTH - i, y: 3 })),
+    ...Array.from({ length: 2 }, (_, i) => ({ x: GRID_WIDTH - i, y: GRID_HEIGHT - 2 })),
+    ...Array.from({ length: 3 }, (_, i) => ({ x: GRID_WIDTH - i, y: GRID_HEIGHT - 1 })),
+    ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH - i, y: GRID_HEIGHT })),
+    ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH, y: GRID_HEIGHT - i - 3 })),
+    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: GRID_HEIGHT - 1 })),
+    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: GRID_HEIGHT }))
+] as const
