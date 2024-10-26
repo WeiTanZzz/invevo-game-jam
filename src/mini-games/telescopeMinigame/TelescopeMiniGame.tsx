@@ -4,7 +4,7 @@ import { useGameState } from "../../game-state.tsx"
 import { IslandState } from "../../types/islands-state.ts"
 import { TelescopeGrid } from "./telescopeGrid.tsx"
 
-const AUDIO_FIND_ISLAND = "telescope/find-island"
+export const AUDIO_FIND_ISLAND = "telescope/find-island"
 
 export const TelescopeMiniGame = () => {
     const [checkingMap, setCheckingMap] = useState(false)
@@ -15,11 +15,12 @@ export const TelescopeMiniGame = () => {
             <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                 {checkingMap ? "Check Telescope" : "Check legend"}
             </button>
-            {checkingMap ? <UseMap islandToFind={islandToFind} /> : <UseTelescopeMiniGame />}
+            {checkingMap ? <TelescopeMap islandToFind={islandToFind} /> : <TelescopeMiniGameContent />}
         </div>
     )
 }
-const UseMap = ({ islandToFind }: { islandToFind: IslandState }) => {
+
+const TelescopeMap = ({ islandToFind }: { islandToFind: IslandState }) => {
     return (
         <div className="flex flex-col items-center justify-center p-6 bg-[#f4e4c1] text-[#4a2c0a] font-serif rounded-lg shadow-lg border-2 border-[#d2b48c] relative overflow-hidden">
             <p className="text-lg">Ahoy! This be {islandToFind.name}</p>
@@ -28,8 +29,8 @@ const UseMap = ({ islandToFind }: { islandToFind: IslandState }) => {
     )
 }
 
-const UseTelescopeMiniGame = () => {
-    const { islandToFind, activeMiniGame, activeSpeechBubble } = useGameState()
+const TelescopeMiniGameContent = () => {
+    const { islandToFind, activeSpeechBubble } = useGameState()
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const audio = useAudio()
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -38,6 +39,7 @@ const UseTelescopeMiniGame = () => {
         activeSpeechBubble.set(`Use your telescope to find ${islandToFind.name}, use the legend for assistance.`)
 
         audio.addEffect(AUDIO_FIND_ISLAND, "/audio/effect/find-island.mp3")
+        audio.setBGM("/audio/bgm/sailing.mp3")
 
         const handleMouseMove = (event: MouseEvent) => {
             setPosition({
@@ -47,26 +49,10 @@ const UseTelescopeMiniGame = () => {
         }
 
         window.addEventListener("mousemove", handleMouseMove)
-        window.addEventListener("mousedown", function (event) {
-            const targetElement = event.target || event.srcElement
-            if (targetElement instanceof Element) {
-                if (targetElement.tagName === "IMG") {
-                    const src = targetElement as HTMLImageElement
-                    console.log(src)
-                    if (src.alt === islandToFind.name) {
-                        audio.playEffect(AUDIO_FIND_ISLAND)
-                        activeSpeechBubble.set(`Good job you found ${islandToFind.name}, not bad for a landlubber!`)
-                        activeMiniGame.set(undefined)
-                    } else {
-                        //todo add some effect for wrong answer
-                        activeSpeechBubble.set(`WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${islandToFind.name.toUpperCase()}, NOT ${src.alt.toUpperCase()}!`)
-                    }
-                }
-            }
-        })
 
         return () => {
             window.removeEventListener("mousemove", handleMouseMove)
+            audio.toggleBackgroundPlayPause()
         }
     }, [])
 

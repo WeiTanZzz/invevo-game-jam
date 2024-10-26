@@ -1,15 +1,14 @@
-import { createContext, ReactNode, useContext, useState } from "react"
-import { GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./map/cells"
+import { createContext, ReactNode, useContext, useLayoutEffect, useState } from "react"
+import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
-import { GamesCompletedState } from "./types/games-completed-state"
 import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
 
 type MoveDirection = "up" | "down" | "left" | "right"
 type GameState = {
     gamesCompleted: {
-        get: GamesCompletedState[]
-        set: (items: GamesCompletedState[]) => void
+        get: (typeof GAMES)[number]["name"][]
+        add: (game: (typeof GAMES)[number]["name"]) => void
     }
     activeMiniGame: {
         get: (typeof GAMES)[number]["name"] | undefined
@@ -47,12 +46,6 @@ const islandsState = [
     { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() }
 ]
 
-const gamesCompletedState = [
-    {
-        "Telescope Mini Game": { completed: false }
-    }
-]
-
 const getDailyIsland = () => {
     const index = Math.floor(Math.random() * islandsState.length)
 
@@ -70,20 +63,29 @@ export const useGameState = () => {
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
+    const [gamesCompleted, setGamesCompleted] = useState<(typeof GAMES)[number]["name"][]>([])
     const [items, setItems] = useState<ItemState[]>([
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
     ])
     const [islands, setIslands] = useState<IslandState[]>(islandsState)
-    const [gamesCompleted, setGamesCompleted] = useState<GamesCompletedState[]>(gamesCompletedState)
     const [activeSpeechBubble, setActiveSpeechBubble] = useState<string>("")
 
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
-    const move = (direction: "up" | "down" | "left" | "right") => {
+    const move = (direction: MoveDirection) => {
+        console.log(gamesCompleted)
         setPos(p => {
             const newX = direction === "left" ? p.x - 1 : direction === "right" ? p.x + 1 : p.x
             const newY = direction === "up" ? p.y - 1 : direction === "down" ? p.y + 1 : p.y
+
+            const trigger = triggerCells.find(cell => cell.x === newX && cell.y === newY)
+            if (trigger !== undefined && !gamesCompleted.some(game => game === trigger.name)) {
+                setActiveMiniGame(trigger.name)
+            } else {
+                setActiveMiniGame(undefined)
+            }
+
             const isInBounds =
                 newX >= 1 && newX <= GRID_WIDTH && newY >= 1 && newY <= GRID_HEIGHT && !hiddenCells.some(cell => cell.x === newX && cell.y === newY)
             if (isInBounds) return { x: newX, y: newY }
@@ -95,13 +97,36 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const reset = () => {
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
+        setGamesCompleted([])
+        setActiveMiniGame(undefined)
+    }
+
+    const onKeyPress = (e: KeyboardEvent) => {
+        if (e.key === "a") move("left")
+        if (e.key === "d") move("right")
+        if (e.key === "w") move("up")
+        if (e.key === "s") move("down")
+    }
+
+    useLayoutEffect(() => {
+        window.addEventListener("keydown", onKeyPress)
+        return () => window.removeEventListener("keydown", onKeyPress)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const addCompletedGame = (game: (typeof GAMES)[number]["name"]) => {
+        console.log("Adding game", game, gamesCompleted)
+        setGamesCompleted(completed => {
+            if (completed.includes(game)) return completed
+            return [...completed, game]
+        })
     }
 
     return (
         <GameStateContext.Provider
             value={{
                 items: { get: items, set: setItems },
-                gamesCompleted: { get: gamesCompleted, set: setGamesCompleted },
+                gamesCompleted: { get: gamesCompleted, add: addCompletedGame },
                 activeMiniGame: { get: activeMiniGame, set: setActiveMiniGame },
                 grid: {
                     ...pos,
@@ -111,7 +136,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 islandToFind: defaultGameState.islandToFind,
                 islands: { get: islands, set: setIslands },
                 activeSpeechBubble: { get: activeSpeechBubble, set: setActiveSpeechBubble },
-                reset: reset
+                reset
             }}
         >
             {children}
@@ -125,11 +150,7 @@ const defaultGameState = {
         y: 6,
         lastMove: "right"
     },
-    gamesCompleted: [
-        {
-            "Telescope Mini Game": { completed: false }
-        }
-    ],
+    gamesCompleted: [],
     islands: islandsState,
     islandToFind: getDailyIsland(),
     activeSpeechBubble: ""

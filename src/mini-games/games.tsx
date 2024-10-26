@@ -16,4 +16,4 @@ export const GAMES: {
         component: <SingToCrewsMiniGame />,
         music: "/audio/bgm/board.mp3"
     }
-]
+] as const
