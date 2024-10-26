@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext, useLayoutEffect, useState } from "react"
+import { useAudio } from "./audio/AudioProvider.tsx"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
 import { ItemState } from "./types/item-state"
@@ -38,11 +39,46 @@ const getDailyIsland = () => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 60, minigames: generateMinigames(1), islandToFind: getDailyIsland(), islands: islandsState },
-    { day: "Tuesday", index: 1, timer: 50, minigames: generateMinigames(5), islandToFind: getDailyIsland(), islands: islandsState },
-    { day: "Wednesday", index: 2, timer: 40, minigames: generateMinigames(5), islandToFind: getDailyIsland(), islands: islandsState },
-    { day: "Thursday", index: 3, timer: 30, minigames: generateMinigames(6), islandToFind: getDailyIsland(), islands: islandsState },
-    { day: "Friday", index: 4, timer: 20, minigames: generateMinigames(10), islandToFind: getDailyIsland(), islands: islandsState }
+    {
+        day: "Monday",
+        index: 0,
+        timer: 60,
+        minigames: generateMinigames(1),
+        islandToFind: getDailyIsland(),
+        islands: islandsState
+    },
+    {
+        day: "Tuesday",
+        index: 1,
+        timer: 50,
+        minigames: generateMinigames(5),
+        islandToFind: getDailyIsland(),
+        islands: islandsState
+    },
+    {
+        day: "Wednesday",
+        index: 2,
+        timer: 40,
+        minigames: generateMinigames(5),
+        islandToFind: getDailyIsland(),
+        islands: islandsState
+    },
+    {
+        day: "Thursday",
+        index: 3,
+        timer: 30,
+        minigames: generateMinigames(6),
+        islandToFind: getDailyIsland(),
+        islands: islandsState
+    },
+    {
+        day: "Friday",
+        index: 4,
+        timer: 20,
+        minigames: generateMinigames(10),
+        islandToFind: getDailyIsland(),
+        islands: islandsState
+    }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -69,12 +105,19 @@ type GameState = {
     activeSpeechBubble: {
         get: string
         set: (items: string) => void
-    },
-    currentDay: typeof daySpecifications[number],
+    }
+    currentDay: (typeof daySpecifications)[number]
     daySpecifications: typeof daySpecifications
 }
 
-const GameStateContext = createContext<(GameState & { reset: () => void; nextDay: () => void; completeGame: () => void }) | undefined>(undefined)
+const GameStateContext = createContext<
+    | (GameState & {
+          reset: () => void
+          nextDay: () => void
+          completeGame: () => void
+      })
+    | undefined
+>(undefined)
 export const useGameState = () => {
     const context = useContext(GameStateContext)
     if (!context) {
@@ -84,8 +127,15 @@ export const useGameState = () => {
 }
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
+    const audio = useAudio()
+
     const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
+    const setActiveMiniGameWithMusic = (game: (typeof GAMES)[number]["name"] | undefined) => {
+        setActiveMiniGame(game)
+        audio.setBGM(GAMES.find(g => g.name === game)?.music ?? "/audio/bgm/sailing.mp3")
+    }
+
     const [items, setItems] = useState<ItemState[]>([
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
@@ -103,9 +153,9 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
             const trigger = triggerCells.find(cell => cell.x === newX && cell.y === newY)
             if (trigger !== undefined && !gamesCompleted.some(game => game === trigger.name)) {
-                setActiveMiniGame(trigger.name)
+                setActiveMiniGameWithMusic(trigger.name)
             } else {
-                setActiveMiniGame(undefined)
+                setActiveMiniGameWithMusic(undefined)
             }
 
             const isInBounds =
@@ -137,11 +187,13 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         addCompletedGame([activeMiniGame ?? ""])
         setActiveMiniGame(undefined)
 
-        if(gamesCompleted.length === currentDay.minigames.length) {
+        if (gamesCompleted.length === currentDay.minigames.length) {
             setActiveSpeechBubble(`congratulations, you've completed all the tasks for today. Let's move on to the next day.`)
             nextDay()
         } else {
-            setActiveSpeechBubble(`congratulations, you've completed a task for today. You have ${currentDay.minigames.length - gamesCompleted.length} tasks left.`)
+            setActiveSpeechBubble(
+                `congratulations, you've completed a task for today. You have ${currentDay.minigames.length - gamesCompleted.length} tasks left.`
+            )
         }
     }
     const onKeyPress = (e: KeyboardEvent) => {
@@ -163,7 +215,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 items: { get: items, set: setItems },
                 gamesCompleted: { get: gamesCompleted, add: addCompletedGame },
-                activeMiniGame: { get: activeMiniGame, set: setActiveMiniGame },
+                activeMiniGame: { get: activeMiniGame, set: setActiveMiniGameWithMusic },
                 grid: {
                     ...pos,
                     move,

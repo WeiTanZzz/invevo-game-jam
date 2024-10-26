@@ -7,10 +7,10 @@ import "./index.css"
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        <GameStateProvider>
-            <AudioProvider>
+        <AudioProvider>
+            <GameStateProvider>
                 <App />
-            </AudioProvider>
-        </GameStateProvider>
+            </GameStateProvider>
+        </AudioProvider>
     </StrictMode>
 )
