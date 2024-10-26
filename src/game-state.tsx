@@ -166,7 +166,9 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 activeSpeechBubble: { get: activeSpeechBubble, set: setActiveSpeechBubble },
                 reset: reset,
                 nextDay: nextDay,
-                completeGame: completeMinigame
+                completeGame: completeMinigame,
+                currentDay,
+                daySpecifications
             }}
         >
             {children}
