@@ -23,8 +23,7 @@ type GameState = {
 }
 
 export const getDailyIsland = () => {
-    //todo get a random island to find
-    const islands = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+    const islands = ["./islandTwo.png", "./islandOne.png"]
     const index = Math.floor(Math.random() * islands.length)
 
     return islands[index]

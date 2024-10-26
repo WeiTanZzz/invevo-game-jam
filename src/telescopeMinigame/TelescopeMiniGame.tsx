@@ -1,31 +1,32 @@
 import { useEffect, useRef, useState } from "react"
 import { useAudio } from "../audio/AudioProvider.tsx"
+import { useGameState } from "../game-state.tsx"
 import { TelescopeGrid } from "./telescopeGrid.tsx"
 
 const AUDIO_FIND_ISLAND = "telescope/find-island"
 
 export const TelescopeMiniGame = () => {
     const [checkingMap, setCheckingMap] = useState(false)
+    const { islandToFind } = useGameState()
 
     return (
         <div>
             <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                 {checkingMap ? "Check Telescope" : "Check legend"}
             </button>
-            {checkingMap ? <UseMap /> : <UseTelescopeMiniGame />}
+            {checkingMap ? <UseMap islandToFind={islandToFind} /> : <UseTelescopeMiniGame islandToFind={islandToFind} />}
         </div>
     )
 }
-const UseMap = () => {
+const UseMap = ({ islandToFind }: { islandToFind: string }) => {
     return (
-        //todo make the daily reset get a different island to find
         <div className="flex flex-col items-center justify-center ">
-            <img src="./islandTwo.png" alt="map" className="h-1/3 w-1/3" />
+            <img src={islandToFind} alt="map" className="h-1/3 w-1/3" />
         </div>
     )
 }
 
-const UseTelescopeMiniGame = () => {
+const UseTelescopeMiniGame = ({ islandToFind }: { islandToFind: string }) => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const audio = useAudio()
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -40,26 +41,30 @@ const UseTelescopeMiniGame = () => {
             })
         }
 
-        const handlerMouseDown = () => {
-            // if (islandDetected) {
-            //     audio.playEffect(AUDIO_FIND_ISLAND)
-            // }
-        }
-
         window.addEventListener("mousemove", handleMouseMove)
-        window.addEventListener("mousedown", handlerMouseDown)
+        window.addEventListener("mousedown", function (event) {
+            const targetElement = event.target || event.srcElement
+            if (targetElement instanceof Element) {
+                if (targetElement.tagName === "IMG") {
+                    const src = (targetElement as HTMLImageElement).alt
+                    if (src === islandToFind) {
+                        audio.playEffect(AUDIO_FIND_ISLAND)
+                    } else {
+                    }
+                }
+            }
+        })
 
         return () => {
             window.removeEventListener("mousemove", handleMouseMove)
-            window.removeEventListener("mousedown", handlerMouseDown)
         }
-    }, [audio])
+    }, [])
 
     return (
-        <div className="cursor-none relative w-screen h-screen bg-cover bg-center overflow-hidden">
-            <div>
-                <canvas ref={canvasRef} style={{ display: "none" }} />
+        <div>
+            <div className="cursor-none pointer-events-none relative w-screen h-screen bg-cover bg-center overflow-hidden">
                 <TelescopeGrid />
+                <canvas ref={canvasRef} style={{ display: "none" }} />
                 <div
                     className="absolute inset-0 bg-black"
                     style={{
