@@ -39,6 +39,7 @@ function App() {
                                         audioManager.setBGM(game.music)
                                         activeMiniGame.set(game.name)
                                     } else {
+                                        activeMiniGame.set(undefined)
                                         audioManager.toggleBackgroundPlayPause()
                                     }
                                 }}

@@ -13,7 +13,7 @@ type GameState = {
     }
     activeMiniGame: {
         get: (typeof GAMES)[number]["name"] | undefined
-        set: (game: (typeof GAMES)[number]["name"]) => void
+        set: (game: (typeof GAMES)[number]["name"] | undefined) => void
     }
 
     items: {
