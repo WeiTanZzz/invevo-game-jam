@@ -1,7 +1,8 @@
-import { useGameState } from "../game-state";
+import { useMemo } from "react"
+import { useGameState } from "../game-state"
 
 export const Speech = () => {
-    const { islandToFind } = useGameState();
+    const { islandToFind } = useGameState()
 
     // Array of different speech templates
     const speeches = [
@@ -15,26 +16,22 @@ export const Speech = () => {
         `"We're off to ${islandToFind.name}, mates! Keep your eyes sharp and your spirits high. It's going to be a wild ride!"`,
         `"Chart a course straight to ${islandToFind.name}. The sea is unforgiving, but so are we. Let's find that treasure!"`,
         `"Our destination is set: ${islandToFind.name}. Let nothing stand in our way—glory and riches await!"`
-    ];
+    ]
 
     // Randomly select a speech
-    const selectedSpeech = speeches[Math.floor(Math.random() * speeches.length)];
+    const selectedSpeech = useMemo(() => speeches[Math.floor(Math.random() * speeches.length)], [islandToFind])
 
     return (
         <div className="text-left absolute w-full h-full mt-32 ml-10 flex items-start">
             <div className="mr-4 text-center">
                 <img src="./captain.png" className="w-50 h-20" alt="Captain" />
-                <span className="text-lg font-serif italic text-blue-900 mt-2 block">
-                    Captain Ghost Beard
-                </span>
+                <span className="text-lg font-serif italic text-blue-900 mt-2 block">Captain Ghost Beard</span>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-lg w-3/4 border-2 border-gray-300 relative">
-                <p className="text-xl font-medium text-gray-800">
-                    {selectedSpeech}
-                </p>
+                <p className="text-xl font-medium text-gray-800">{selectedSpeech}</p>
                 <div className="absolute left-0 bottom-0 transform translate-y-full -ml-4 w-0 h-0 border-t-8 border-t-gray-300 border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
                 <div className="absolute left-0 bottom-0 transform translate-y-full -ml-3 w-0 h-0 border-t-8 border-t-white border-l-8 border-l-transparent border-r-8 border-r-transparent"></div>
             </div>
         </div>
-    );
+    )
 }
