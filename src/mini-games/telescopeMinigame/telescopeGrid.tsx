@@ -8,16 +8,15 @@ const width = 20
 const height = 9
 
 export const TelescopeGrid = () => {
-    const { currentDay } = useGameState()
+    const { minigames } = useGameState()
 
     return (
         <div className="flex pointer-events-auto flex-1 flex-col items-center justify-center">
             {new Array(height).fill(1).map((_, y) => (
                 <div className="flex flex-row flex-1 grow w-full">
                     {new Array(width).fill(1).map((_, x) => {
-                        checkIslandsAreOnUniqueGridPositions(currentDay)
-
-                        const island = currentDay.islands.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
+                        checkIslandsAreOnUniqueGridPositions(minigames.telescope)
+                        const island = minigames.telescope.islands.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
                         if (island) {
                             return <Cell imageToRender={island} />
                         } else {
@@ -42,17 +41,18 @@ const checkIslandsAreOnUniqueGridPositions = (currentDay: { islands: IslandState
 }
 
 const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
-    const { activeSpeechBubble, completeGame, currentDay } = useGameState()
+    const { activeSpeechBubble, completeGame, minigames } = useGameState()
     const audio = useAudio()
 
     const onClick = () => {
-        if (imageToRender.name === currentDay.islandToFind.name) {
+        if (imageToRender.name === minigames.telescope.islandToFind.name) {
             audio.playEffect(AUDIO_FIND_ISLAND)
-            activeSpeechBubble.set(`Good job you found ${currentDay.islandToFind.name}, not bad for a landlubber!`)
+            activeSpeechBubble.set(`Good job you found ${minigames.telescope.islandToFind.name}, not bad for a landlubber!`)
             completeGame()
         } else {
+            //todo add some effect for wrong answer
             activeSpeechBubble.set(
-                `WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${currentDay.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`
+                `WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${minigames.telescope.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`
             )
         }
     }

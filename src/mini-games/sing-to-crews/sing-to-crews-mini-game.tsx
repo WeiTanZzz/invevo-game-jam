@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useAudio } from "../../audio/AudioProvider.tsx"
 import { FrequencyAnalyser } from "../../audio/FrequencyAnalyser.ts"
+import { useGameState } from "../../game-state.tsx"
 
 const AUDIO_CHEER = "singToCrews/cheer"
 const AUDIO_BOO = "singToCrews/boo"
 
-const NOTES = ["C4", "D4", "E4", "F4", "G4", "A4", "B4"]
+const NOTES = ["C4", "D4"]
 
 const getRandomNotes = (n: number) => {
     const selectedNotes: string[] = []
@@ -31,13 +32,14 @@ const MOCK_CREWS: {
 
 const SingToCrewsMiniGame = () => {
     const audio = useAudio()
+    const { activeSpeechBubble, completeGame } = useGameState()
     audio.addEffect(AUDIO_CHEER, "/audio/effect/sing-to-crews/cheer.mp3")
     audio.addEffect(AUDIO_BOO, "/audio/effect/sing-to-crews/boo.mp3")
 
     const [crews, setCrews] = useState<CrewProps[]>(MOCK_CREWS)
     const [gameStart, setGameStart] = useState(true)
     const [canContinue, setCanContinue] = useState(true)
-    const [aims, setAims] = useState<string[]>(getRandomNotes(1))
+    const [aims, setAims] = useState<string[]>(getRandomNotes(2))
     const frequencyAnalyserRef = useRef<FrequencyAnalyser | null>(null)
 
     const aimsRef = useRef(aims)
@@ -47,6 +49,7 @@ const SingToCrewsMiniGame = () => {
         setAims([])
         aimsRef.current = []
         setGameStart(false)
+        console.log("frequencyAnalyserRef.current", frequencyAnalyserRef.current)
         frequencyAnalyserRef.current?.stop()
         frequencyAnalyserRef.current = null
     }
@@ -60,6 +63,10 @@ const SingToCrewsMiniGame = () => {
                 aimsRef.current = newAims
                 audio.playEffect(AUDIO_CHEER)
                 setCrews(crews => crews.map(crew => ({ ...crew, status: "happy" })))
+                if (aimsRef.current.length === 0) {
+                    onGameEnd()
+                    completeGame()
+                }
             } else {
                 audio.playEffect(AUDIO_BOO)
                 setCrews(crews => crews.map(crew => ({ ...crew, status: "sad" })))
@@ -72,10 +79,11 @@ const SingToCrewsMiniGame = () => {
                 canContinueRef.current = true
             }, 2000)
         },
-        [audio]
+        [audio, completeGame]
     )
 
     useEffect(() => {
+        activeSpeechBubble.set(`Sing the notes to the crew to make them happy! Clue:${aims[0]}`)
         const startRecording = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -88,19 +96,18 @@ const SingToCrewsMiniGame = () => {
         }
 
         if (gameStart) {
-            startRecording()
-        } else {
-            onGameEnd()
+            startRecording().then(() => {
+                console.log("Recording started")
+            })
         }
 
         return () => {
             frequencyAnalyserRef.current?.stop()
         }
-    }, [gameStart, handlePitchDetected])
+    }, [activeSpeechBubble, aims, completeGame, gameStart, handlePitchDetected])
 
     return (
         <div className={"relative w-svw h-svh bg-black bg-cover bg-[url('/images/sing-to-crew/bg.webp')]"}>
-            {aims[0] && <div className={"absolute left-1/3 text-9xl text-red-400"}>Clue: {aims[0]}</div>}
             <div className={"m-auto w-10/12 h-5/6 flex justify-center items-end flex-wrap"}>
                 {crews.map((crew, index) => (
                     <Crew key={index} id={crew.id} name={crew.name} status={crew.status} />
