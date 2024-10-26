@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { useGameState } from "./game-state"
@@ -23,42 +22,36 @@ const GameButton = ({ changeGameHandler, text }: GameButtonProps) => {
 
 function App() {
     const audioManager = useAudio()
-    const [playingMiniGame, setPlayingMiniGame] = useState(false)
-    const [miniGame, setMiniGame] = useState<React.ReactNode>(GAMES[0].component)
-    const { gamesCompleted } = useGameState()
+    const { gamesCompleted, activeMiniGame } = useGameState()
 
     return (
         <DragAndDropProvider>
             <div>
                 {GAMES.map(game => {
                     if (gamesCompleted.get.find(gameCompleted => gameCompleted[game.name])?.completed) {
-                        setPlayingMiniGame(false)
                         return null
                     } else {
                         return (
                             <GameButton
                                 key={game.name}
                                 changeGameHandler={() => {
-                                    if (!playingMiniGame) {
-                                        audioManager.setBGM(game.bgm)
-                                        setMiniGame(game.component)
+                                    if (activeMiniGame.get !== game.name) {
+                                        audioManager.setBGM(game.music)
+                                        activeMiniGame.set(game.name)
                                     } else {
                                         audioManager.toggleBackgroundPlayPause()
                                     }
-
-                                    setPlayingMiniGame(!playingMiniGame)
                                 }}
                                 text={game.name}
                             />
-                        )
-                    }
-                })}
+                    )}}
+                )}
             </div>
             <Overlay>
                 <Speech />
             </Overlay>
-            {playingMiniGame ? (
-                <>{miniGame}</>
+            {activeMiniGame.get !== undefined ? (
+                <>{GAMES.find(g => activeMiniGame.get === g.name)}</>
             ) : (
                 <>
                     <Map />

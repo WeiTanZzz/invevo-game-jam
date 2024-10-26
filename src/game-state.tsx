@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./map/cells"
+import { GAMES } from "./mini-games/games"
 import { GamesCompletedState } from "./types/games-completed-state"
 import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
@@ -9,6 +10,10 @@ type GameState = {
     gamesCompleted: {
         get: GamesCompletedState[]
         set: (items: GamesCompletedState[]) => void
+    }
+    activeMiniGame: {
+        get: (typeof GAMES)[number]["name"] | undefined
+        set: (game: (typeof GAMES)[number]["name"]) => void
     }
 
     items: {
@@ -59,6 +64,7 @@ export const useGameState = () => {
 }
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
+    const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
     const [items, setItems] = useState<ItemState[]>([
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
@@ -90,6 +96,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 items: { get: items, set: setItems },
                 gamesCompleted: { get: gamesCompleted, set: setGamesCompleted },
+                activeMiniGame: { get: activeMiniGame, set: setActiveMiniGame },
                 grid: {
                     ...pos,
                     move,
