@@ -1,4 +1,9 @@
+import { useGameState } from "../game-state";
+
 export const Speech = () => {
+    const { islandToFind } = useGameState()
+    
+
     return (
         <div className="text-left absolute w-full h-full mt-32 ml-10 flex items-start">
             <div className="mr-4 text-center">
