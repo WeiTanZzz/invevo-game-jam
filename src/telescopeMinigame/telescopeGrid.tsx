@@ -14,7 +14,7 @@ export const TelescopeGrid = () => {
                     {new Array(width).fill(1).map((_, x) => {
                         const island = islands.get.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
                         if (island) {
-                            return <Cell imageToRender={island.island} />
+                            return <Cell imageToRender={island.path} />
                         } else {
                             return <div className="size-24 bg-blue-600 items-center justify-center" />
                         }

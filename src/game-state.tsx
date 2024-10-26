@@ -19,14 +19,20 @@ type GameState = {
         get: IslandState[]
         set: (items: IslandState[]) => void
     }
-    islandToFind: string
+    islandToFind: IslandState
 }
 
-export const getDailyIsland = () => {
-    const islands = ["./islandTwo.png", "./islandOne.png"]
-    const index = Math.floor(Math.random() * islands.length)
+const randomIslandPosition = () => { return {x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 9)}}
 
-    return islands[index]
+const islandsState = [
+    {name:"Treasure Island", path: "./islandOne.png", gridPosition: randomIslandPosition()},
+    {name:"Skull Island", path: "./islandTwo.png", gridPosition: randomIslandPosition()},
+]
+
+const getDailyIsland = () => {
+    const index = Math.floor(Math.random() * islandsState.length)
+
+    return islandsState[index]
 }
 
 const GameStateContext = createContext<(GameState & { reset: () => void }) | undefined>(undefined)
@@ -43,22 +49,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
     ])
-    const [islands, setIslands] = useState<IslandState[]>([
-        {
-            island: "./islandOne.png",
-            gridPosition: {
-                x: Math.floor(Math.random() * 20),
-                y: Math.floor(Math.random() * 9)
-            }
-        },
-        {
-            island: "./islandTwo.png",
-            gridPosition: {
-                x: Math.floor(Math.random() * 20),
-                y: Math.floor(Math.random() * 9)
-            }
-        }
-    ])
+    const [islands, setIslands] = useState<IslandState[]>(islandsState)
 
     const [x, setX] = useState<number>(defaultGameState.grid.x)
     const [y, setY] = useState<number>(defaultGameState.grid.y)
@@ -66,20 +57,17 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const move = (direction: "up" | "down" | "left" | "right") => {
         if (direction === "up") {
             setY(v => (1 <= v - 1 && v - 1 <= GRID_HEIGHT ? v - 1 : v))
-            setLastMove("up")
         }
         if (direction === "down") {
             setY(v => (1 <= v + 1 && v + 1 <= GRID_HEIGHT ? v + 1 : v))
-            setLastMove("down")
         }
         if (direction === "left") {
             setX(v => (1 <= v - 1 && v - 1 <= GRID_WIDTH ? v - 1 : v))
-            setLastMove("left")
         }
         if (direction === "right") {
             setX(v => (1 <= v + 1 && v + 1 <= GRID_WIDTH ? v + 1 : v))
-            setLastMove("right")
         }
+        setLastMove(direction)
     }
 
     const reset = () => {
@@ -110,25 +98,10 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
 const defaultGameState = {
     grid: {
-        x: 1,
-        y: 1,
+        x: 2,
+        y: 6,
         lastMove: "right"
     },
-    islands: [
-        {
-            gridPosition: {
-                x: Math.floor(Math.random() * 20),
-                y: Math.floor(Math.random() * 9)
-            },
-            island: "./islandTwo.png"
-        },
-        {
-            gridPosition: {
-                x: Math.floor(Math.random() * 20),
-                y: Math.floor(Math.random() * 9)
-            },
-            island: "./islandOne.png"
-        }
-    ],
+    islands: islandsState,
     islandToFind: getDailyIsland()
 } as const
