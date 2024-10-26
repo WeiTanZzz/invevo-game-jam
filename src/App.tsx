@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
-import { GameStateProvider } from "./game-state"
+import { GameStateProvider, useGameState } from "./game-state"
 import { Inventory } from "./inventory/inventory.tsx"
 import { Map } from "./map/map.tsx"
 import { Overlay } from "./overlay/overlay.tsx"
@@ -43,12 +43,13 @@ function App() {
     const audioManager = useAudio()
     const [playingMiniGame, setPlayingMiniGame] = useState(false)
     const [miniGame, setMiniGame] = useState<React.ReactNode>(<TelescopeMiniGame />)
+    const { gamesCompleted } = useGameState()
 
     return (
-        <GameStateProvider>
-            <DragAndDropProvider>
-                <div>
-                    {GAMES.map(game => (
+        <DragAndDropProvider>
+            <div>
+                {GAMES.map(game =>
+                    gamesCompleted.get.find(gameCompleted => gameCompleted.name === game.name)?.completed ? null : (
                         <GameButton
                             key={game.name}
                             changeGameHandler={() => {
@@ -63,23 +64,23 @@ function App() {
                             }}
                             text={game.name}
                         />
-                    ))}
-                </div>
-                <Overlay>
-                    <Speech />
-                </Overlay>
-                {playingMiniGame ? (
-                    <>{miniGame}</>
-                ) : (
-                    <>
-                        <Map />
-                        <Inventory id="chest-one" width={1} height={4} colour="bg-blue-300" />
-                        <Inventory id="player-inventory" width={2} height={4} colour="bg-orange-300" />
-                        <Inventory id="chest-two" width={2} height={2} colour="bg-blue-300" />
-                    </>
+                    )
                 )}
-            </DragAndDropProvider>
-        </GameStateProvider>
+            </div>
+            <Overlay>
+                <Speech />
+            </Overlay>
+            {playingMiniGame ? (
+                <>{miniGame}</>
+            ) : (
+                <>
+                    <Map />
+                    <Inventory id="chest-one" width={1} height={4} colour="bg-blue-300" />
+                    <Inventory id="player-inventory" width={2} height={4} colour="bg-orange-300" />
+                    <Inventory id="chest-two" width={2} height={2} colour="bg-blue-300" />
+                </>
+            )}
+        </DragAndDropProvider>
     )
 }
 
