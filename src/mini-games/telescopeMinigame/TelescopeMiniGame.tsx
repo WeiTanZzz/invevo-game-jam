@@ -62,7 +62,6 @@ const TelescopeMiniGameContent = () => {
                 <TelescopeGrid />
                 <canvas ref={canvasRef} style={{ display: "none" }} />
                 <div
-                    // className="absolute inset-0 bg-black"
                     style={{
                         maskImage: `radial-gradient(circle at ${position.x}px ${position.y}px, transparent 50px, black 75px)`
                     }}

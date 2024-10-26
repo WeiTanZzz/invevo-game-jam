@@ -1,8 +1,6 @@
-import { createContext, ReactNode, useContext, useLayoutEffect, useState } from "react"
+import { createContext, ReactNode, useContext, , useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
-import { GamesCompletedState } from "./types/games-completed-state"
-import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
 
 const generateMinigames = (amount: number) => {
@@ -21,9 +19,16 @@ const randomIslandPosition = () => {
 }
 
 const islandsState = [
-    { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
-    { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
-    { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() }
+        { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
+        { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
+        { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() },
+        { name: "Calm House Island", path: "./Islands/Calm_house.png", gridPosition: randomIslandPosition() },
+        { name: "Dracula Island", path: "./Islands/dracula_island.png", gridPosition: randomIslandPosition() },
+        { name: "Ghost Island", path: "./Islands/Ghost_island.png", gridPosition: randomIslandPosition() },
+        { name: "Nessy", path: "./Islands/Nessy.png", gridPosition: randomIslandPosition() },
+        { name: "Pirate Hat Island", path: "./Islands/pirate_hat_island.png", gridPosition: randomIslandPosition() },
+        { name: "Star Island", path: "./Islands/star_island.png", gridPosition: randomIslandPosition() },
+        { name: "Target Island", path: "./Islands/target_island.png", gridPosition: randomIslandPosition() }
 ]
 
 const getDailyIsland = () => {
@@ -43,8 +48,8 @@ const daySpecifications = [
 type MoveDirection = "up" | "down" | "left" | "right"
 type GameState = {
     gamesCompleted: {
-        get: GamesCompletedState[]
-        set: (items: GamesCompletedState[]) => void
+        get: (typeof GAMES)[number]["name"][]
+        add: (game: (typeof GAMES)[number]["name"][]) => void
     }
     activeMiniGame: {
         get: (typeof GAMES)[number]["name"] | undefined
@@ -67,27 +72,6 @@ type GameState = {
     }
 }
 
-const randomIslandPosition = () => {
-    return { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 9) }
-}
-
-const islandsState = [
-    { name: "Treasure Island", path: "./Islands/treasure_island.png", gridPosition: randomIslandPosition() },
-    { name: "Skull Island", path: "./Islands/skull_island.png", gridPosition: randomIslandPosition() },
-    { name: "Bandana Island", path: "./Islands/bandana_island.png", gridPosition: randomIslandPosition() }
-]
-
-const gamesCompletedState = [
-    {
-        "Telescope Mini Game": { completed: false }
-    }
-]
-
-const getDailyIsland = () => {
-    const index = Math.floor(Math.random() * islandsState.length)
-
-    return islandsState[index]
-}
 
 const GameStateContext = createContext<(GameState & { reset: () => void; nextDay: () => void, completeGame: () => void }) | undefined>(undefined)
 export const useGameState = () => {
@@ -99,15 +83,12 @@ export const useGameState = () => {
 }
 
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
-    const [gamesCompleted, setGamesCompleted] = useState<(typeof GAMES)[number]["name"][]>([])
+    const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
-    const [gamesCompleted, setGamesCompleted] = useState<(typeof GAMES)[number]["name"][]>([])
     const [items, setItems] = useState<ItemState[]>([
         { type: "Cannon Ball", inventoryPosition: 0, inventorySource: "player-inventory" },
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
     ])
-    const [islands, setIslands] = useState<IslandState[]>(islandsState)
-    const [gamesCompleted, setGamesCompleted] = useState<GamesCompletedState[]>(gamesCompletedState)
     const [activeSpeechBubble, setActiveSpeechBubble] = useState<string>("")
 
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
@@ -148,6 +129,13 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const startDay = () => {
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
+        setActiveSpeechBubble(`welcome to a new day, it's ${currentDay.day} and you have ${currentDay.minigames.length} tasks to complete.`)
+    }
+
+    const completeMinigame = () => {
+        setActiveSpeechBubble(`well done kids`)
+        addCompletedGame([activeMiniGame ?? ""])
+        setActiveMiniGame(undefined)
     }
 
     return (
@@ -162,7 +150,9 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                     lastMove
                 },
                 activeSpeechBubble: { get: activeSpeechBubble, set: setActiveSpeechBubble },
-                reset: reset
+                reset: reset,
+                nextDay: nextDay,
+                completeGame: completeMinigame
             }}
         >
             {children}
@@ -175,13 +165,5 @@ const defaultGameState = {
         x: 2,
         y: 6,
         lastMove: "right"
-    },
-    gamesCompleted: [
-        {
-            "Telescope Mini Game": { completed: false }
-        }
-    ],
-    islands: islandsState,
-    islandToFind: getDailyIsland(),
-    activeSpeechBubble: ""
+    }
 } as const
