@@ -44,14 +44,15 @@ function App() {
                                 }}
                                 text={game.name}
                             />
-                    )}}
-                )}
+                        )
+                    }
+                })}
             </div>
             <Overlay>
                 <Speech />
             </Overlay>
             {activeMiniGame.get !== undefined ? (
-                <>{GAMES.find(g => activeMiniGame.get === g.name)}</>
+                <>{GAMES.find(g => activeMiniGame.get === g.name)?.component}</>
             ) : (
                 <>
                     <Map />
