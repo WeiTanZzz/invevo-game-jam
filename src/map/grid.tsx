@@ -1,9 +1,7 @@
 import { useLayoutEffect } from "react"
 import { useGameState } from "../game-state"
 import { cn } from "../util"
-
-export const GRID_WIDTH = 31
-export const GRID_HEIGHT = 11
+import { Coordinate, GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./cells"
 
 export const Grid = () => {
     const { grid } = useGameState()
@@ -36,8 +34,6 @@ export const Grid = () => {
         </div>
     )
 }
-
-type Coordinate = { x: number; y: number }
 
 const Cell = ({ x, y }: Coordinate) => {
     const { grid } = useGameState()
@@ -74,17 +70,3 @@ const Cell = ({ x, y }: Coordinate) => {
         </div>
     )
 }
-
-export const hiddenCells: Coordinate[] = [
-    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: 1 })),
-    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: 2 })),
-    ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH - i, y: 1 })),
-    ...Array.from({ length: 3 }, (_, i) => ({ x: GRID_WIDTH - i, y: 2 })),
-    ...Array.from({ length: 2 }, (_, i) => ({ x: GRID_WIDTH - i, y: 3 })),
-    ...Array.from({ length: 2 }, (_, i) => ({ x: GRID_WIDTH - i, y: GRID_HEIGHT - 2 })),
-    ...Array.from({ length: 3 }, (_, i) => ({ x: GRID_WIDTH - i, y: GRID_HEIGHT - 1 })),
-    ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH - i, y: GRID_HEIGHT })),
-    ...Array.from({ length: 5 }, (_, i) => ({ x: GRID_WIDTH, y: GRID_HEIGHT - i - 3 })),
-    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: GRID_HEIGHT - 1 })),
-    ...Array.from({ length: 5 }, (_, i) => ({ x: i + 1, y: GRID_HEIGHT }))
-] as const

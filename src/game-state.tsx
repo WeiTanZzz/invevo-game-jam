@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react"
-import { GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./map/grid"
+import { GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./map/cells"
 import { GamesCompletedState } from "./types/games-completed-state"
 import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
