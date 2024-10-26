@@ -31,6 +31,10 @@ type GameState = {
         set: (items: IslandState[]) => void
     }
     islandToFind: IslandState
+    activeSpeechBubble: {
+        get: string
+        set: (items: string) => void
+    }
 }
 
 const randomIslandPosition = () => {
@@ -71,6 +75,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     ])
     const [islands, setIslands] = useState<IslandState[]>(islandsState)
     const [gamesCompleted, setGamesCompleted] = useState<GamesCompletedState[]>(gamesCompletedState)
+    const [activeSpeechBubble, setActiveSpeechBubble] = useState<string>("")
 
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
@@ -104,6 +109,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 },
                 islandToFind: defaultGameState.islandToFind,
                 islands: { get: islands, set: setIslands },
+                activeSpeechBubble: { get: activeSpeechBubble, set: setActiveSpeechBubble },
                 reset: reset
             }}
         >
@@ -124,5 +130,6 @@ const defaultGameState = {
         }
     ],
     islands: islandsState,
-    islandToFind: getDailyIsland()
+    islandToFind: getDailyIsland(),
+    activeSpeechBubble: ""
 } as const

@@ -1,4 +1,5 @@
 import { useGameState } from "../../game-state"
+import { IslandState } from "../../types/islands-state"
 import { cn } from "../../util"
 
 const width = 20
@@ -14,7 +15,7 @@ export const TelescopeGrid = () => {
                     {new Array(width).fill(1).map((_, x) => {
                         const island = islands.get.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
                         if (island) {
-                            return <Cell imageToRender={island.path} />
+                            return <Cell imageToRender={island} />
                         } else {
                             return <div className="bg-blue-600 w-1/12 grow aspect-square items-center justify-center " />
                         }
@@ -25,12 +26,12 @@ export const TelescopeGrid = () => {
     )
 }
 
-const Cell = ({ imageToRender }: { imageToRender: string }) => {
+const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
     return (
         <div className={cn("bg-blue-600 w-1/12 grow aspect-square items-center justify-center")}>
             {
                 <span>
-                    <img className="bg-cover bg-" src={imageToRender} alt={imageToRender} />
+                    <img className="bg-cover bg-" src={imageToRender.path} alt={imageToRender.name} aria-label="" />
                 </span>
             }
         </div>
