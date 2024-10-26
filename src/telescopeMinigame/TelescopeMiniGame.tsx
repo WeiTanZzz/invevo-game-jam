@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useAudio } from "../audio/AudioProvider.tsx"
 import { useGameState } from "../game-state.tsx"
+import { IslandState } from "../types/islands-state.ts"
 import { TelescopeGrid } from "./telescopeGrid.tsx"
 
 const AUDIO_FIND_ISLAND = "telescope/find-island"
@@ -18,15 +19,15 @@ export const TelescopeMiniGame = () => {
         </div>
     )
 }
-const UseMap = ({ islandToFind }: { islandToFind: string }) => {
+const UseMap = ({ islandToFind }: { islandToFind: IslandState }) => {
     return (
         <div className="flex flex-col items-center justify-center ">
-            <img src={islandToFind} alt="map" className="h-1/3 w-1/3" />
+            <img src={islandToFind.path} alt="map" className="h-1/3 w-1/3" />
         </div>
     )
 }
 
-const UseTelescopeMiniGame = ({ islandToFind }: { islandToFind: string }) => {
+const UseTelescopeMiniGame = ({ islandToFind }: { islandToFind: IslandState }) => {
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const audio = useAudio()
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -47,7 +48,7 @@ const UseTelescopeMiniGame = ({ islandToFind }: { islandToFind: string }) => {
             if (targetElement instanceof Element) {
                 if (targetElement.tagName === "IMG") {
                     const src = (targetElement as HTMLImageElement).alt
-                    if (src === islandToFind) {
+                    if (src === islandToFind.path) {
                         audio.playEffect(AUDIO_FIND_ISLAND)
                     } else {
                     }
