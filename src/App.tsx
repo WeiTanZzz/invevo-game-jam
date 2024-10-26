@@ -28,25 +28,21 @@ function App() {
         <DragAndDropProvider>
             <div>
                 {GAMES.map(game => {
-                    if (gamesCompleted.get.find(gameCompleted => gameCompleted[game.name])?.completed) {
-                        return null
-                    } else {
-                        return (
-                            <GameButton
-                                key={game.name}
-                                changeGameHandler={() => {
-                                    if (activeMiniGame.get !== game.name) {
-                                        audioManager.setBGM(game.music)
-                                        activeMiniGame.set(game.name)
-                                    } else {
-                                        activeMiniGame.set(undefined)
-                                        audioManager.toggleBackgroundPlayPause()
-                                    }
-                                }}
-                                text={game.name}
-                            />
-                        )
-                    }
+                    return (
+                        <GameButton
+                            key={game.name}
+                            changeGameHandler={() => {
+                                if (activeMiniGame.get !== game.name) {
+                                    audioManager.setBGM(game.music)
+                                    activeMiniGame.set(game.name)
+                                } else {
+                                    activeMiniGame.set(undefined)
+                                    audioManager.toggleBackgroundPlayPause()
+                                }
+                            }}
+                            text={game.name}
+                        />
+                    )
                 })}
             </div>
             <Overlay>
