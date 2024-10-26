@@ -1,7 +1,7 @@
 const defaultAudio = "/audio/bgm/sailing.mp3"
 export class AudioManager {
     private backgroundAudio: HTMLAudioElement
-    private effects: { [key: string]: HTMLAudioElement }
+    private readonly effects: { [key: string]: HTMLAudioElement }
 
     constructor() {
         this.backgroundAudio = new Audio(defaultAudio)
