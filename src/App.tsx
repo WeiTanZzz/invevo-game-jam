@@ -15,7 +15,7 @@ function App() {
                 <Speech />
             </Overlay>
             {activeMiniGame.get !== undefined ? (
-                <>{GAMES.find(g => activeMiniGame.get === g.name)?.component}</>
+                <div className="bg-blue-800">{GAMES.find(g => activeMiniGame.get === g.name)?.component}</div>
             ) : (
                 <>
                     <Map />

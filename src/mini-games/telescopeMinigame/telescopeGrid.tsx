@@ -4,14 +4,14 @@ import { IslandState } from "../../types/islands-state"
 import { cn } from "../../util"
 import { AUDIO_FIND_ISLAND } from "./TelescopeMiniGame"
 
-const width = 20
-const height = 9
+const width = 25
+const height = 11
 
 export const TelescopeGrid = () => {
     const { minigames } = useGameState()
 
     return (
-        <div className="flex pointer-events-auto flex-1 flex-col items-center justify-center">
+        <div className="flex pointer-events-auto flex-1 flex-col items-center justify-center w-full mt-28">
             {new Array(height).fill(1).map((_, y) => (
                 <div className="flex flex-row flex-1 grow w-full">
                     {new Array(width).fill(1).map((_, x) => {

@@ -12,10 +12,11 @@ export const TelescopeMiniGame = () => {
 
     return (
         <div>
-            <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+            {/* <button onClick={() => setCheckingMap(!checkingMap)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
                 {checkingMap ? "Check Telescope" : "Check legend"}
-            </button>
-            {checkingMap ? <TelescopeMap islandToFind={minigames.telescope.islandToFind} /> : <TelescopeMiniGameContent />}
+            </button> */}
+            {/* {checkingMap ? <TelescopeMap islandToFind={minigames.telescope.islandToFind} /> : <TelescopeMiniGameContent />} */}
+            <TelescopeMiniGameContent />
         </div>
     )
 }
@@ -58,7 +59,7 @@ const TelescopeMiniGameContent = () => {
 
     return (
         <div>
-            <div className="cursor-none pointer-events-none relative w-screen h-screen bg-cover bg-center overflow-hidden">
+            <div className="cursor-none pointer-events-none relative w-11/12 bg-cover bg-center overflow-hidden">
                 <TelescopeGrid />
                 <canvas ref={canvasRef} style={{ display: "none" }} />
                 <div
