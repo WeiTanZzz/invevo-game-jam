@@ -134,9 +134,15 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const completeMinigame = () => {
-        setActiveSpeechBubble(`well done kids`)
         addCompletedGame([activeMiniGame ?? ""])
         setActiveMiniGame(undefined)
+
+        if(gamesCompleted.length === currentDay.minigames.length) {
+            setActiveSpeechBubble(`congratulations, you've completed all the tasks for today. Let's move on to the next day.`)
+            nextDay()
+        } else {
+            setActiveSpeechBubble(`congratulations, you've completed a task for today. You have ${currentDay.minigames.length - gamesCompleted.length} tasks left.`)
+        }
     }
     const onKeyPress = (e: KeyboardEvent) => {
         if (e.key === "a") move("left")
