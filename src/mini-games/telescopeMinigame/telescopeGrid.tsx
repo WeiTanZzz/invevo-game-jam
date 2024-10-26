@@ -8,14 +8,14 @@ const width = 20
 const height = 9
 
 export const TelescopeGrid = () => {
-    const { islands } = useGameState()
+    const { currentDay } = useGameState()
 
     return (
         <div className="flex pointer-events-auto flex-1 flex-col items-center justify-center">
             {new Array(height).fill(1).map((_, y) => (
                 <div className="flex flex-row flex-1 grow w-full">
                     {new Array(width).fill(1).map((_, x) => {
-                        const island = islands.get.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
+                        const island = currentDay.islands.find(island => island.gridPosition.x === x && island.gridPosition.y === y)
                         if (island) {
                             return <Cell imageToRender={island} />
                         } else {
@@ -29,18 +29,17 @@ export const TelescopeGrid = () => {
 }
 
 const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
-    const { islandToFind, activeMiniGame, gamesCompleted, activeSpeechBubble } = useGameState()
+    const { activeSpeechBubble, completeGame, currentDay } = useGameState()
     const audio = useAudio()
 
     const onClick = () => {
-        if (imageToRender.name === islandToFind.name) {
+        if (imageToRender.name === currentDay.islandToFind.name) {
             audio.playEffect(AUDIO_FIND_ISLAND)
-            activeSpeechBubble.set(`Good job you found ${islandToFind.name}, not bad for a landlubber!`)
-            gamesCompleted.add("Telescope Mini Game")
-            activeMiniGame.set(undefined)
+            activeSpeechBubble.set(`Good job you found ${currentDay.islandToFind.name}, not bad for a landlubber!`)
+            completeGame()
         } else {
             //todo add some effect for wrong answer
-            activeSpeechBubble.set(`WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`)
+            activeSpeechBubble.set(`WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${currentDay.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`)
         }
     }
 

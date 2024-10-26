@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, , useState } from "react"
+import { createContext, ReactNode, useContext, useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
 import { ItemState } from "./types/item-state"
@@ -38,11 +38,11 @@ const getDailyIsland = () => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 60, minigames: generateMinigames(1), island: getDailyIsland(), otherIslands: islandsState },
-    { day: "Tuesday", index: 1, timer: 50, minigames: generateMinigames(5), island: getDailyIsland(), otherIslands: islandsState },
-    { day: "Wednesday", index: 2, timer: 40, minigames: generateMinigames(5), island: getDailyIsland(), otherIslands: islandsState },
-    { day: "Thursday", index: 3, timer: 30, minigames: generateMinigames(6), island: getDailyIsland(), otherIslands: islandsState },
-    { day: "Friday", index: 4, timer: 20, minigames: generateMinigames(10), island: getDailyIsland(), otherIslands: islandsState }
+    { day: "Monday", index: 0, timer: 60, minigames: generateMinigames(1), islandToFind: getDailyIsland(), islands: islandsState },
+    { day: "Tuesday", index: 1, timer: 50, minigames: generateMinigames(5), islandToFind: getDailyIsland(), islands: islandsState },
+    { day: "Wednesday", index: 2, timer: 40, minigames: generateMinigames(5), islandToFind: getDailyIsland(), islands: islandsState },
+    { day: "Thursday", index: 3, timer: 30, minigames: generateMinigames(6), islandToFind: getDailyIsland(), islands: islandsState },
+    { day: "Friday", index: 4, timer: 20, minigames: generateMinigames(10), islandToFind: getDailyIsland(), islands: islandsState }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -69,7 +69,9 @@ type GameState = {
     activeSpeechBubble: {
         get: string
         set: (items: string) => void
-    }
+    },
+    currentDay: typeof daySpecifications[number],
+    daySpecifications: typeof daySpecifications
 }
 
 
