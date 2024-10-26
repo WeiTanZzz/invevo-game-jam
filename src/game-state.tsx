@@ -1,10 +1,16 @@
 import { createContext, ReactNode, useContext, useState } from "react"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells } from "./map/grid"
+import { GamesCompletedState } from "./types/games-completed-state"
 import { IslandState } from "./types/islands-state"
 import { ItemState } from "./types/item-state"
 
 type MoveDirection = "up" | "down" | "left" | "right"
 type GameState = {
+    gamesCompleted: {
+        get: GamesCompletedState[]
+        set: (items: GamesCompletedState[]) => void
+    }
+
     items: {
         get: ItemState[]
         set: (items: ItemState[]) => void
@@ -22,12 +28,16 @@ type GameState = {
     islandToFind: IslandState
 }
 
-const randomIslandPosition = () => { return {x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 9)}}
+const randomIslandPosition = () => {
+    return { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 9) }
+}
 
 const islandsState = [
-    {name:"Treasure Island", path: "./islandOne.png", gridPosition: randomIslandPosition()},
-    {name:"Skull Island", path: "./islandTwo.png", gridPosition: randomIslandPosition()},
+    { name: "Treasure Island", path: "./islandOne.png", gridPosition: randomIslandPosition() },
+    { name: "Skull Island", path: "./islandTwo.png", gridPosition: randomIslandPosition() }
 ]
+
+const gamesCompletedState = [{ name: "Telescope Mini Game", completed: false }]
 
 const getDailyIsland = () => {
     const index = Math.floor(Math.random() * islandsState.length)
@@ -50,6 +60,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         { type: "Rope", inventoryPosition: 4, inventorySource: "player-inventory" }
     ])
     const [islands, setIslands] = useState<IslandState[]>(islandsState)
+    const [gamesCompleted, setGamesCompleted] = useState<GamesCompletedState[]>(gamesCompletedState)
 
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
@@ -74,6 +85,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         <GameStateContext.Provider
             value={{
                 items: { get: items, set: setItems },
+                gamesCompleted: { get: gamesCompleted, set: setGamesCompleted },
                 grid: {
                     ...pos,
                     move,
@@ -95,6 +107,12 @@ const defaultGameState = {
         y: 6,
         lastMove: "right"
     },
+    gamesCompleted: [
+        {
+            name: "Telescope Mini Game",
+            completed: false
+        }
+    ],
     islands: islandsState,
     islandToFind: getDailyIsland()
 } as const
