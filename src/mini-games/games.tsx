@@ -1,4 +1,5 @@
-import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game.tsx"
+import { NavigationMinigame } from "./navigation/navigationMinigame"
+import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game"
 import { TelescopeMiniGame } from "./telescopeMinigame/TelescopeMiniGame"
 
 export const GAMES: {
@@ -12,8 +13,13 @@ export const GAMES: {
         music: "/audio/bgm/sailing.mp3"
     },
     {
-        name: "Sing to Crews",
+        name: "Sing to the Captain",
         component: <SingToCrewsMiniGame />,
+        music: "/audio/bgm/board.mp3"
+    },
+    {
+        name: "Sail the Seven Seas",
+        component: <NavigationMinigame />,
         music: "/audio/bgm/board.mp3"
     }
 ] as const
