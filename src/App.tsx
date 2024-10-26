@@ -23,7 +23,6 @@ const GameButton = ({ changeGameHandler, text }: GameButtonProps) => {
 function App() {
     const audioManager = useAudio()
     const { gamesCompleted, activeMiniGame } = useGameState()
-
     return (
         <DragAndDropProvider>
             <div>
