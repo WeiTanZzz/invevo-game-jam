@@ -20,6 +20,8 @@ const edgeCells: Coordinate[] = [
 ] as const
 
 const innerCells: Coordinate[] = [
+    { x: 9, y: 1 },
+    { x: 10, y: 1 },
     { x: 9, y: 11 },
     { x: 10, y: 11 }
 ]

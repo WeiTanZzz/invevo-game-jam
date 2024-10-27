@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { useGameState } from "../game-state"
 import { cn } from "../util"
 import { Coordinate, GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./cells"
@@ -20,7 +21,7 @@ export const Grid = () => {
 }
 
 const Cell = ({ x, y }: Coordinate) => {
-    const { grid, gamesCompleted } = useGameState()
+    const { grid, gamesCompleted, currentDay } = useGameState()
 
     const isCellHidden = hiddenCells.some(cell => cell.x === x && cell.y === y)
 
@@ -37,7 +38,12 @@ const Cell = ({ x, y }: Coordinate) => {
         if (yDist > 0) grid.move("up")
     }
 
-    const isTriggerCell = triggerCells.some(cell => cell.x === x && cell.y === y && !gamesCompleted.get.some(game => game === cell.name))
+    const isNextGame = useMemo(() => {
+        console.log(currentDay.minigames, gamesCompleted.get)
+        const trigger = triggerCells.find(cell => cell.x === x && cell.y === y && !gamesCompleted.get.some(game => game === cell.name))
+        const nextGame = currentDay.minigames[gamesCompleted.get.length]
+        return nextGame !== undefined && (nextGame === trigger?.name || (trigger?.name === "Check the island" && nextGame === "Telescope Mini Game"))
+    }, [currentDay, gamesCompleted, x, y])
 
     return (
         <div
@@ -45,7 +51,7 @@ const Cell = ({ x, y }: Coordinate) => {
             className={cn(
                 "w-1/12 grow aspect-square items-center justify-center shadow-cell-base",
                 isCurrentCell && "shadow-cell-current",
-                isTriggerCell && "shadow-cell-trigger",
+                isNextGame && "shadow-cell-trigger",
                 canMoveToCell ? "hover:shadow-cell-available" : !isCurrentCell && "hover:shadow-cell-unavailable",
                 isCellHidden && "shadow-none hover:shadow-none",
                 isCurrentCell && grid.lastMove === "up" && "-rotate-90",

@@ -8,6 +8,16 @@ import { ItemState } from "./types/item-state"
 const gridWidth = 20
 const gridHeight = 10
 
+const randomGames = (amount: number) => {
+    const pickGame = () => {
+        const index = Math.floor(Math.random() * GAMES.length)
+        const game = GAMES[index]
+        if (game.name === "Check the island") return pickGame()
+        return game.name
+    }
+    return Array.from({ length: amount }).map(pickGame)
+}
+
 const entities = [
     { name: "aquarius", path: "./navigation/aquarius.png", type: "water", randomWeight: 20 },
     { name: "player", path: "./navigation/galleon.png", type: "player", randomWeight: 0 },
@@ -101,11 +111,11 @@ const getDailyIsland = (islands: IslandState[]) => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 60, minigames: 1 },
-    { day: "Tuesday", index: 1, timer: 50, minigames: 2 },
-    { day: "Wednesday", index: 2, timer: 40, minigames: 2 },
-    { day: "Thursday", index: 3, timer: 30, minigames: 3 },
-    { day: "Friday", index: 4, timer: 20, minigames: 3 }
+    { day: "Monday", index: 0, timer: 90, minigames: randomGames(1) },
+    { day: "Tuesday", index: 1, timer: 70, minigames: randomGames(2) },
+    { day: "Wednesday", index: 2, timer: 60, minigames: randomGames(2) },
+    { day: "Thursday", index: 3, timer: 60, minigames: randomGames(3) },
+    { day: "Friday", index: 4, timer: 60, minigames: randomGames(4) }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -195,11 +205,14 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
     const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
-    const setActiveMiniGameWithMusic = (game: (typeof GAMES)[number]["name"] | undefined) => {
-        if (activeMiniGame === game) return
-        setActiveMiniGame(game)
-        audio.setBGM(GAMES.find(g => g.name === game)?.music)
-    }
+    const setActiveMiniGameWithMusic = useCallback(
+        (game: (typeof GAMES)[number]["name"] | undefined) => {
+            if (activeMiniGame === game) return
+            setActiveMiniGame(game)
+            audio.setBGM(GAMES.find(g => g.name === game)?.music)
+        },
+        [activeMiniGame, audio]
+    )
 
     const [minigames, setMinigames] = useState<MinigamesBaseState>(buildMinigamesBaseState())
     const [items, setItems] = useState<ItemState[]>([
@@ -243,26 +256,32 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         minigames.navigation.grid[playerX][playerY] = water
     }
 
-    const moveMap = (direction: MoveDirection) => {
-        setPos(p => {
-            const newX = direction === "left" ? p.x - 1 : direction === "right" ? p.x + 1 : p.x
-            const newY = direction === "up" ? p.y - 1 : direction === "down" ? p.y + 1 : p.y
+    const moveMap = useCallback(
+        (direction: MoveDirection) => {
+            setPos(p => {
+                const newX = direction === "left" ? p.x - 1 : direction === "right" ? p.x + 1 : p.x
+                const newY = direction === "up" ? p.y - 1 : direction === "down" ? p.y + 1 : p.y
 
-            const trigger = triggerCells.find(cell => cell.x === newX && cell.y === newY)
+                const nextGame = currentDay.minigames[gamesCompleted.length]
+                const trigger = triggerCells.find(cell => cell.x === newX && cell.y === newY)
+                const isNextGame =
+                    (trigger !== undefined && nextGame === trigger?.name) || (trigger?.name === "Check the island" && nextGame === "Telescope Mini Game")
 
-            if (trigger !== undefined && !gamesCompleted.some(game => game === trigger.name)) {
-                setActiveMiniGameWithMusic(trigger.name)
-            } else {
-                setActiveMiniGameWithMusic(undefined)
-            }
+                if (isNextGame) {
+                    setActiveMiniGameWithMusic(trigger.name)
+                } else {
+                    setActiveMiniGameWithMusic(undefined)
+                }
 
-            const isInBounds =
-                newX >= 1 && newX <= GRID_WIDTH && newY >= 1 && newY <= GRID_HEIGHT && !hiddenCells.some(cell => cell.x === newX && cell.y === newY)
-            if (isInBounds) return { x: newX, y: newY }
-            return p
-        })
-        setLastMove(direction)
-    }
+                const isInBounds =
+                    newX >= 1 && newX <= GRID_WIDTH && newY >= 1 && newY <= GRID_HEIGHT && !hiddenCells.some(cell => cell.x === newX && cell.y === newY)
+                if (isInBounds) return { x: newX, y: newY }
+                return p
+            })
+            setLastMove(direction)
+        },
+        [currentDay.minigames, gamesCompleted.length, setActiveMiniGameWithMusic]
+    )
 
     const reset = () => {
         startDay(0)
@@ -285,27 +304,30 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
         setActiveSpeechBubble(
-            `Yarr... it’s ${day.day}, and ye’re still breathin’. Best get crackin’ ${day.minigames} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
+            `Yarr... it’s ${day.day}, and ye’re still breathin’. Best get crackin’ ${day.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
         )
     }
 
     const completeMinigame = () => {
-        addCompletedGame([...new Set([...gamesCompleted, activeMiniGame!])])
+        const updatedGamesCompleted = [...new Set([...gamesCompleted, activeMiniGame!])]
+        if (activeMiniGame !== "Check the island") {
+            addCompletedGame(updatedGamesCompleted)
+        }
 
         setActiveMiniGameWithMusic(undefined)
 
-        if (gamesCompleted.length === currentDay.minigames && currentDay.index === daySpecifications.length - 1) {
+        if (updatedGamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
             setActiveSpeechBubble(
                 `Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`
             )
-        } else if (gamesCompleted.length === currentDay.minigames && currentDay.index !== daySpecifications.length - 1) {
+        } else if (updatedGamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
             setActiveSpeechBubble(
                 `Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`
             )
             setGamePlayingState("Day over")
         } else {
             setActiveSpeechBubble(
-                `A task be done, aye... but don’t start thinkin’ ye’re safe just yet. ${currentDay.minigames - gamesCompleted.length} tasks still remain, and only a fool counts his gold before he gets back to land...`
+                `A task be done, aye... but don’t start thinkin’ ye’re safe just yet. ${currentDay.minigames.length - updatedGamesCompleted.length} tasks still remain, and only a fool counts his gold before he gets back to land...`
             )
         }
     }
@@ -318,7 +340,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             if (e.key === "w") moveFn("up")
             if (e.key === "s") moveFn("down")
         },
-        [activeMiniGame]
+        [activeMiniGame, moveMap]
     )
 
     useEffect(() => {

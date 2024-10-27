@@ -16,11 +16,6 @@ export const GAMES: {
         music: "/audio/bgm/sailing.mp3"
     },
     {
-        name: "Sing to the Captain",
-        component: <SingToCrewsMiniGame />,
-        music: "/audio/bgm/board.mp3"
-    },
-    {
         name: "Sail the Seven Seas",
         component: <NavigationMinigame />,
         music: "/audio/bgm/board.mp3"
@@ -41,3 +36,8 @@ export const GAMES: {
         music: "/audio/bgm/sailing.mp3"
     }
 ] as const
+//{
+//    name: "Sing to the Captain",
+//    component: <SingToCrewsMiniGame />,
+//    music: "/audio/bgm/board.mp3"
+//},
