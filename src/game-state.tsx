@@ -69,12 +69,6 @@ const navigationMinigameState = () => {
     return grid
 }
 
-const randomGames = (amount: number) =>
-    Array.from({ length: amount }).map(() => {
-        const index = Math.floor(Math.random() * GAMES.length)
-        return GAMES[index]
-    })
-
 const randomIslandPosition = () => {
     return { x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 9) }
 }
@@ -106,11 +100,11 @@ const getDailyIsland = (islands: IslandState[]) => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 60, minigames: randomGames(1) },
-    { day: "Tuesday", index: 1, timer: 50, minigames: randomGames(2) },
-    { day: "Wednesday", index: 2, timer: 40, minigames: randomGames(2) },
-    { day: "Thursday", index: 3, timer: 30, minigames: randomGames(3) },
-    { day: "Friday", index: 4, timer: 20, minigames: randomGames(3) }
+    { day: "Monday", index: 0, timer: 60, minigames: 1 },
+    { day: "Tuesday", index: 1, timer: 50, minigames: 2 },
+    { day: "Wednesday", index: 2, timer: 40, minigames: 2 },
+    { day: "Thursday", index: 3, timer: 30, minigames: 3 },
+    { day: "Friday", index: 4, timer: 20, minigames: 3 }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -219,11 +213,13 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         console.log("moveSea", direction)
         const playerX = minigames.navigation.grid.findIndex(row => row.find(cell => cell.type === "player"))!
         const playerY = minigames.navigation.grid[playerX].findIndex(cell => cell.type === "player")!
-
+        console.log("current player position", playerX, playerY)
         const newX = direction === "left" ? playerX - 1 : direction === "right" ? playerX + 1 : playerX
         const newY = direction === "up" ? playerY - 1 : direction === "down" ? playerY + 1 : playerY
-
+        console.log("new player position", newX, newY)
+        console.log("")
         if (minigames.navigation.grid[newX][newY].type === "blocker") {
+            console.log("new player position", newX, newY)
             setActiveSpeechBubble("Ye’ve crashed into an island! No safe harbor here, just jagged rocks and hungry shadows...")
         }
         if (minigames.navigation.grid[newX][newY].type === "goal") {
@@ -285,7 +281,11 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
         setActiveSpeechBubble(
+<<<<<<< HEAD
             `Yarr... it’s ${currentDay.day}, and ye’re still breathin’. Best get crackin’—${currentDay.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
+=======
+            `Yarr... it’s ${day.day}, and ye’re still breathin’. Best get crackin’ ${day.minigames} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
+>>>>>>> 7d88b97 (fix day moves)
         )
     }
 
@@ -294,33 +294,31 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
         setActiveMiniGameWithMusic(undefined)
 
-        if (gamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
+        if (gamesCompleted.length === currentDay.minigames && currentDay.index === daySpecifications.length - 1) {
             setActiveSpeechBubble(
                 `Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`
             )
-        } else if (gamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
+        } else if (gamesCompleted.length === currentDay.minigames && currentDay.index !== daySpecifications.length - 1) {
             setActiveSpeechBubble(
                 `Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`
             )
             nextDay()
         } else {
             setActiveSpeechBubble(
-                `A task be done, aye... but don’t start thinkin’ ye’re safe just yet. ${currentDay.minigames.length - gamesCompleted.length} tasks still remain, and only a fool counts his gold before he gets back to land...`
+                `A task be done, aye... but don’t start thinkin’ ye’re safe just yet. ${currentDay.minigames - gamesCompleted.length} tasks still remain, and only a fool counts his gold before he gets back to land...`
             )
         }
     }
     const onKeyPress = (e: KeyboardEvent) => {
-        if (activeMiniGame === "Sail the Seven Seas") {
-            if (e.key === "a") moveSea("left")
-            if (e.key === "d") moveSea("right")
-            if (e.key === "w") moveSea("up")
-            if (e.key === "s") moveSea("down")
-        } else if (!activeMiniGame) {
-            if (e.key === "a") moveMap("left")
-            if (e.key === "d") moveMap("right")
-            if (e.key === "w") moveMap("up")
-            if (e.key === "s") moveMap("down")
-        }
+        if (e.key === "f") moveSea("left")
+        if (e.key === "h") moveSea("right")
+        if (e.key === "t") moveSea("up")
+        if (e.key === "g") moveSea("down")
+
+        if (e.key === "a") moveMap("left")
+        if (e.key === "d") moveMap("right")
+        if (e.key === "w") moveMap("up")
+        if (e.key === "s") moveMap("down")
     }
 
     useLayoutEffect(() => {
