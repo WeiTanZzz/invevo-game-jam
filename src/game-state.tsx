@@ -269,6 +269,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const nextDay = () => {
+        setGamePlayingState("Playing")
         startDay(currentDay.index + 1)
     }
 
@@ -301,7 +302,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             setActiveSpeechBubble(
                 `Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`
             )
-            nextDay()
+            setGamePlayingState("Day over")
         } else {
             setActiveSpeechBubble(
                 `A task be done, aye... but don’t start thinkin’ ye’re safe just yet. ${currentDay.minigames - gamesCompleted.length} tasks still remain, and only a fool counts his gold before he gets back to land...`

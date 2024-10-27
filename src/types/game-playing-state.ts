@@ -1,1 +1,1 @@
-export type GamePlayingState = "Game over" | "Playing" | "Start game" | "Win"
+export type GamePlayingState = "Game over" | "Playing" | "Start game" | "Win" | "Day over"

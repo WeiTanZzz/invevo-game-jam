@@ -11,6 +11,7 @@ export const Timer = () => {
         }
 
         const timerId = setInterval(() => {
+            if (gamePlayingState.get === "Day over") return
             timeLeft.set(Math.max(timeLeft.get - 1, 0))
         }, 1000)
 
