@@ -273,7 +273,6 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 const isNextGame =
                     (trigger !== undefined && nextGame === trigger?.name) || (trigger?.name === "Check the island" && nextGame === "Telescope Mini Game")
 
-                console.log(currentDay.minigames, gamesCompleted.length, isNextGame, trigger?.name, nextGame)
                 if (isNextGame) {
                     setActiveMiniGameWithMusic(trigger.name)
                 } else {
