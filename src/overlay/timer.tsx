@@ -7,7 +7,7 @@ export const Timer = () => {
 
     useEffect(() => {
         if (timeLeft <= 0) {
-            //todo you have failed
+            //todo you have failed the game, show game over screen and button to reset the game
             return
         }
 

@@ -2,10 +2,10 @@ import { DragAndDropProvider } from "./drag-and-drop-provider.tsx"
 import { useGameState } from "./game-state"
 import { Inventory } from "./inventory/inventory.tsx"
 import { Map } from "./map/map.tsx"
-import Timer from "./map/timer.tsx"
 import { GAMES } from "./mini-games/games.tsx"
 import { Overlay } from "./overlay/overlay.tsx"
 import { Speech } from "./overlay/speech.tsx"
+import Timer from "./overlay/timer.tsx"
 
 function App() {
     const { activeMiniGame } = useGameState()
