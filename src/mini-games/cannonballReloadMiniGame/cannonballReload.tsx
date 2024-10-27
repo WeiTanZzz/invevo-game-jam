@@ -29,23 +29,23 @@ export const CannonballReload = () => {
     const handleMouseDown = () => {
         setCharging(true)
         setreloadLevel(0)
-        activeSpeechBubble.set("Reload the cannon quick mi laddeh!")
+        activeSpeechBubble.set("Reload the cannon, ye scurvy laddeh, and be quick about it! We’ve got fightin’ to do!")
     }
 
     const handleMouseUp = () => {
         setCharging(false)
         if (reloadLevel < SUCCESS_THRESHOLD) {
-            activeSpeechBubble.set("Missed! The shot was too weak.")
+            activeSpeechBubble.set("Ye missed, ye bilge rat! That shot was weaker than a landlubber’s handshake!")
             return
         }
 
         const damage = Math.round(reloadLevel / 2 + Math.random() * 10)
         setEnemyHealth(prevHealth => Math.max(prevHealth - damage, 0))
 
-        activeSpeechBubble.set(`Hit! Dealt ${damage} damage!`)
+        activeSpeechBubble.set(`Hit! Aye, ye dealt ${damage} damage! That’ll teach 'em to cross paths with a true buccaneer!`)
 
         if (enemyHealth <= damage) {
-            activeSpeechBubble.set("You sunk the enemy ship!")
+            activeSpeechBubble.set("Ye’ve sent the enemy ship to the depths! Down to Davy Jones' locker with 'em!")
             completeGame()
         }
     }
@@ -77,13 +77,12 @@ export const CannonballReload = () => {
                     <div className="absolute left-1/2  bg-green-600 h-full w-full z-0 "></div>
                 </div>
                 <button onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
-                    {charging ? "Charging..." : "Hold to reload"}
+                    {charging ? "Fillin wi' grapeshot" : "Hold to reload, ye scallywag!"}
                 </button>
                 <div className="mt-4 w-64 bg-gray-300 rounded-lg overflow-hidden border border-black">
                     <div className="bg-red-500 h-6 transition-all duration-200 ease-linear" style={{ width: `${enemyHealth}%` }}></div>
                 </div>
-                <p className="text-lg mt-2">Enemy Ship Health: {enemyHealth}%</p>
-            </div>
+                <p className="text-lg mt-2">Enemy Ship Status: {enemyHealth > 75 ? 'Barely Scratched' : enemyHealth > 50 ? 'Leakin’ Like a Sieve' : enemyHealth > 25 ? 'Burnin’ and Battered' : 'On Death’s Door'}!</p>            </div>
         </div>
     )
 }
