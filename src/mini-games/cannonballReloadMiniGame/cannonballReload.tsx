@@ -54,11 +54,29 @@ export const CannonballReload = () => {
         }
     }
 
+    const offset = charging ? Math.max((reloadLevel - 40) / 10, 0) : 0
+
     return (
         <div className="flex flex-col items-center justify-center h-full bg-blue-200 ">
+            <style>
+                {`
+          @keyframes vibrate {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-${offset}px); }
+            40% { transform: translateX(${offset}px); }
+            60% { transform: translateX(-${offset}px); }
+            80% { transform: translateX(${offset}px); }
+          }
+        `}
+            </style>
             <div className="mt-20 ">
                 <h1 className="text-2xl font-bold mb-4 ">Reload the Cannon!</h1>
-                <div className="relative w-64 h-32 border border-black rounded-lg overflow-hidden">
+                <div
+                    className="relative w-64 h-32 border border-black rounded-lg overflow-hidden"
+                    style={{
+                        animation: `vibrate 0.1s ease-in-out infinite`
+                    }}
+                >
                     <div className={`absolute bottom-0 left-0 bg-red-600 h-full z-10`} style={{ width: `${reloadLevel}%`, transition: "width 0.1s" }}></div>
                     <div className="absolute left-1/2  bg-green-600 h-full w-full z-0 "></div>
                 </div>
