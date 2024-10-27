@@ -9,13 +9,15 @@ const gridWidth = 20
 const gridHeight = 10
 
 const randomGames = (amount: number) => {
+    const games: string[] = []
     const pickGame = () => {
         const index = Math.floor(Math.random() * GAMES.length)
         const game = GAMES[index]
-        if (game.name === "Check the island") return pickGame()
+        if (game.name === "Check the island" || games.includes(game.name)) return pickGame()
         return game.name
     }
-    return Array.from({ length: amount }).map(pickGame)
+    Array.from({ length: amount }).forEach(() => games.push(pickGame()))
+    return games
 }
 
 const entities = [
