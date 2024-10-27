@@ -24,7 +24,10 @@ const innerCells: Coordinate[] = [
     { x: 10, y: 11 }
 ]
 
-export const triggerCells: (Coordinate & { name: (typeof GAMES)[number]["name"] })[] = 
-[{ x: 14, y: 6, name: "Telescope Mini Game" }, { x: 6, y: 6, name: "Sail the Seven Seas" }]
+export const triggerCells: (Coordinate & { name: (typeof GAMES)[number]["name"] })[] = [
+    { x: 14, y: 6, name: "Telescope Mini Game" },
+    { x: 6, y: 6, name: "Sail the Seven Seas" },
+    { x: 24, y: 6, name: "Raise the sail" }
+]
 
 export const hiddenCells = [...edgeCells, ...innerCells] as const

@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react"
+import { useGameState } from "../../game-state"
 
 export const RaiseSailClicker = () => {
     const [progress, setProgress] = useState(0)
     const [isComplete, setIsComplete] = useState(false)
+    const { activeSpeechBubble, completeGame } = useGameState()
+    activeSpeechBubble.set("Ahoy, me hearties! Click the button to raise the sail. The faster you click, the faster we'll be on our way!")
 
     const handleClick = () => {
         setProgress(prev => Math.min(prev + 1, 50))
 
         if (progress + 1 >= 50) {
             setIsComplete(true)
+            activeSpeechBubble.set("Sail raised! Great work, matey!")
+            completeGame()
         }
     }
 
@@ -16,7 +21,7 @@ export const RaiseSailClicker = () => {
         if (isComplete) return
 
         const decayInterval = setInterval(() => {
-            setProgress(prev => Math.max(prev - 0.03, 0))
+            setProgress(prev => Math.max(prev - 0.004, 0))
         }, 100)
 
         return () => clearInterval(decayInterval)

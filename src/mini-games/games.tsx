@@ -24,7 +24,7 @@ export const GAMES: {
         music: "/audio/bgm/board.mp3"
     },
     {
-        name: "Raise the sail Mini Game",
+        name: "Raise the sail",
         component: <RaiseSailClicker />,
         music: "/audio/bgm/sailing.mp3"
     }
