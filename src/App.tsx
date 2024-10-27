@@ -38,7 +38,6 @@ function App() {
                     ) : (
                         <>
                             <Map />
-                            <Pos />
                         </>
                     )}
                 </DragAndDropProvider>

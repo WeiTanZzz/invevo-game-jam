@@ -3,14 +3,12 @@ import { useGameState } from "../../game-state"
 
 export const CannonballReload = () => {
     const { activeSpeechBubble, completeGame } = useGameState()
-    const fireMessage = "Cannon fired! Click and hold to reload the cannon and release to fire at the enemy ship."
 
     const [charging, setCharging] = useState(false)
     const [reloadLevel, setreloadLevel] = useState(0)
-    const [cannonFired, setCannonFired] = useState(false)
     const [enemyHealth, setEnemyHealth] = useState(100)
     const MAX_reload = 100
-    const SUCCESS_THRESHOLD = 35
+    const SUCCESS_THRESHOLD = 50
 
     useEffect(() => {
         let reloadInterval: number | undefined
@@ -30,7 +28,6 @@ export const CannonballReload = () => {
 
     const handleMouseDown = () => {
         setCharging(true)
-        setCannonFired(false)
         setreloadLevel(0)
         activeSpeechBubble.set("Reload the cannon quick mi laddeh!")
     }
@@ -44,7 +41,6 @@ export const CannonballReload = () => {
 
         const damage = Math.round(reloadLevel / 2 + Math.random() * 10)
         setEnemyHealth(prevHealth => Math.max(prevHealth - damage, 0))
-        setCannonFired(true)
 
         activeSpeechBubble.set(`Hit! Dealt ${damage} damage!`)
 
@@ -80,18 +76,13 @@ export const CannonballReload = () => {
                     <div className={`absolute bottom-0 left-0 bg-red-600 h-full z-10`} style={{ width: `${reloadLevel}%`, transition: "width 0.1s" }}></div>
                     <div className="absolute left-1/2  bg-green-600 h-full w-full z-0 "></div>
                 </div>
-                <button
-                    onMouseDown={handleMouseDown}
-                    onMouseLeave={handleMouseUp}
-                    onMouseUp={handleMouseUp}
-                    className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
-                >
+                <button onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
                     {charging ? "Charging..." : "Hold to reload"}
                 </button>
-                {cannonFired && <div className="mt-4 text-lg">{fireMessage}</div>}
-                <div className="mt-4">
-                    <p className="text-lg">Enemy Ship Health: {enemyHealth}</p>
+                <div className="mt-4 w-64 bg-gray-300 rounded-lg overflow-hidden border border-black">
+                    <div className="bg-red-500 h-6 transition-all duration-200 ease-linear" style={{ width: `${enemyHealth}%` }}></div>
                 </div>
+                <p className="text-lg mt-2">Enemy Ship Health: {enemyHealth}%</p>
             </div>
         </div>
     )
