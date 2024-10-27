@@ -39,7 +39,6 @@ const Cell = ({ x, y }: Coordinate) => {
     }
 
     const isNextGame = useMemo(() => {
-        console.log(currentDay.minigames, gamesCompleted.get)
         const trigger = triggerCells.find(cell => cell.x === x && cell.y === y && !gamesCompleted.get.some(game => game === cell.name))
         const nextGame = currentDay.minigames[gamesCompleted.get.length]
         return nextGame !== undefined && (nextGame === trigger?.name || (trigger?.name === "Check the island" && nextGame === "Telescope Mini Game"))

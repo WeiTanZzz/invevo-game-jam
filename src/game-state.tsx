@@ -205,7 +205,7 @@ export const useGameState = () => {
 export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const audio = useAudio()
 
-    const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
+    const [gamesCompleted, setCompletedGames] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
     const setActiveMiniGameWithMusic = useCallback(
         (game: (typeof GAMES)[number]["name"] | undefined) => {
@@ -272,6 +272,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 const isNextGame =
                     (trigger !== undefined && nextGame === trigger?.name) || (trigger?.name === "Check the island" && nextGame === "Telescope Mini Game")
 
+                console.log(currentDay.minigames, gamesCompleted.length, isNextGame, trigger?.name, nextGame)
                 if (isNextGame) {
                     setActiveMiniGameWithMusic(trigger.name)
                 } else {
@@ -288,9 +289,10 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         [currentDay.minigames, gamesCompleted.length, setActiveMiniGameWithMusic]
     )
 
-    const reset = () => {
+    const reset = useCallback(() => {
         startDay(0)
-    }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const nextDay = () => {
         startDay(currentDay.index + 1)
@@ -303,7 +305,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setActiveMiniGameWithMusic(undefined)
         setItems([])
         setTimeLeft(day.timer)
-        addCompletedGame([])
+        setCompletedGames([])
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
@@ -319,7 +321,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         }
 
         const updatedGamesCompleted = [...new Set([...gamesCompleted, activeMiniGame!])]
-        addCompletedGame(updatedGamesCompleted)
+        setCompletedGames(updatedGamesCompleted)
 
         setActiveMiniGameWithMusic(undefined)
 
@@ -364,7 +366,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         <GameStateContext.Provider
             value={{
                 items: { get: items, set: setItems },
-                gamesCompleted: { get: gamesCompleted, add: addCompletedGame },
+                gamesCompleted: { get: gamesCompleted, add: setCompletedGames },
                 activeMiniGame: { get: activeMiniGame, set: setActiveMiniGameWithMusic },
                 grid: {
                     ...pos,
