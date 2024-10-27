@@ -4,6 +4,71 @@ import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
 import { ItemState } from "./types/item-state"
 
+const gridWidth = 20
+const gridHeight = 10
+
+const entities = [
+    { name: "aquarius", path: "./navigation/aquarius.png", type: "water", randomWeight: 20 },
+    { name: "player", path: "./navigation/galleon.png", type: "player", randomWeight: 0 },
+    { name: "goal", path: "./navigation/open-treasure-chest.png", type: "goal", randomWeight: 0 },
+
+    { name: "Monster", path: "./navigation/fish-monster.png", type: "monster", randomWeight: 0.2 },
+    { name: "enemy-ship-5", path: "./navigation/unlit-bomb.png", type: "monster", randomWeight: 0.2 },
+    { name: "Sea Creature", path: "./navigation/sea-creature.png", type: "monster", randomWeight: 0.2 },
+    { name: "Tentacle", path: "./navigation/curled-tentacle.png", type: "monster", randomWeight: 0.2 },
+
+    { name: "Dolphin", path: "./navigation/dolphin.png", type: "open", randomWeight: 0.2 },
+    { name: "Jellyfish", path: "./navigation/jellyfish.png", type: "open", randomWeight: 0.2 },
+    { name: "piranha", path: "./navigation/piranha.png", type: "open", randomWeight: 0.2 },
+    { name: "shark", path: "./navigation/shark-fin.png", type: "open", randomWeight: 0.2 },
+    { name: "Ship wreck", path: "./navigation/ship-wreck.png", type: "open", randomWeight: 0.2 },
+
+    { name: "island", path: "./navigation/island.png", type: "blocker", randomWeight: 2 },
+
+    { name: "enemy-ship-1", path: "./navigation/pirate-captain.png", type: "enemy", randomWeight: 0.2 },
+    { name: "enemy-ship-2", path: "./navigation/pirate-flag.png", type: "enemy", randomWeight: 0.2 },
+    { name: "enemy-ship-3", path: "./navigation/pirate-skull.png", type: "enemy", randomWeight: 0.2 },
+    { name: "enemy-ship-4", path: "./navigation/skull-crossed-bones.png", type: "enemy", randomWeight: 0.2 },
+    { name: "Blade", path: "./navigation/blade-bite.png", type: "enemy", randomWeight: 0.2 }
+]
+
+const water = entities.find(entity => entity.type === "water")!
+const player = entities.find(entity => entity.type === "player")!
+const goal = entities.find(entity => entity.type === "goal")!
+
+type Grid = (typeof entities)[number][][]
+
+const getRandomEntity = () => {
+    const totalWeight = entities.reduce((sum, entity) => sum + entity.randomWeight, 0)
+
+    let random = Math.random() * totalWeight
+
+    for (const entity of entities) {
+        const weight = entity.randomWeight
+        if (random < weight) {
+            return entity
+        }
+        random -= weight
+    }
+
+    return water
+}
+
+const navigationMinigameState = () => {
+    const grid = new Array(gridWidth).fill([]).map(() => new Array(gridHeight).fill(water)) as Grid
+    grid[0][0] = player
+    grid[gridWidth - 1][gridHeight - 1] = goal
+
+    for (let x = 0; x < gridWidth; x++) {
+        for (let y = 0; y < gridHeight; y++) {
+            if ((x <= 2 && y <= 2) || (x >= gridWidth - 2 && y >= gridHeight - 2)) continue
+            grid[x][y] = getRandomEntity()
+        }
+    }
+
+    return grid
+}
+
 const randomGames = (amount: number) =>
     Array.from({ length: amount }).map(() => {
         const index = Math.floor(Math.random() * GAMES.length)
@@ -83,14 +148,23 @@ type MinigamesBaseState = {
         islandToFind: IslandState
         islands: IslandState[]
     }
+    navigation: {
+        grid: Grid
+        islandToFind: IslandState
+    }
 }
 
 const buildMinigamesBaseState = () => {
     const islands = islandsState()
+    const islandToFind = getDailyIsland(islands)
     const baseState: MinigamesBaseState = {
         telescope: {
-            islandToFind: getDailyIsland(islands),
+            islandToFind,
             islands
+        },
+        navigation: {
+            grid: navigationMinigameState(),
+            islandToFind
         }
     }
 
@@ -119,7 +193,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
     const setActiveMiniGameWithMusic = (game: (typeof GAMES)[number]["name"] | undefined) => {
-        console.log(game, activeMiniGame)
+        console.log("setActiveMiniGameWithMusic", game)
         if (activeMiniGame === game) return
         setActiveMiniGame(game)
         audio.setBGM(GAMES.find(g => g.name === game)?.music)
@@ -135,14 +209,44 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
-    const move = (direction: MoveDirection) => {
-        console.log(gamesCompleted)
+
+    const moveSea = (direction: MoveDirection) => {
+        console.log("moveSea", direction)
+        const playerX = minigames.navigation.grid.findIndex(row => row.find(cell => cell.type === "player"))!
+        const playerY = minigames.navigation.grid[playerX].findIndex(cell => cell.type === "player")!
+
+        const newX = direction === "left" ? playerX - 1 : direction === "right" ? playerX + 1 : playerX
+        const newY = direction === "up" ? playerY - 1 : direction === "down" ? playerY + 1 : playerY
+
+        if (minigames.navigation.grid[newX][newY].type === "blocker") {
+            setActiveSpeechBubble("You have hit an island!")
+        }
+        if (minigames.navigation.grid[newX][newY].type === "goal") {
+            setActiveSpeechBubble("You have reached the goal!")
+            completeMinigame()
+        }
+        if (minigames.navigation.grid[newX][newY].type === "monster") {
+            setActiveSpeechBubble("You have been attacked by a monster!")
+        }
+        if (minigames.navigation.grid[newX][newY].type === "enemy") {
+            setActiveSpeechBubble("You have been attacked by an enemy ship!")
+        }
+        if (newX < 0 || newX >= gridWidth || newY < 0 || newY >= gridHeight) {
+            setActiveSpeechBubble("Thar be dragons here!")
+        }
+
+        setActiveSpeechBubble("The open sea is calm.")
+        minigames.navigation.grid[newX][newY] = player
+        minigames.navigation.grid[playerX][playerY] = water
+    }
+
+    const moveMap = (direction: MoveDirection) => {
         setPos(p => {
             const newX = direction === "left" ? p.x - 1 : direction === "right" ? p.x + 1 : p.x
             const newY = direction === "up" ? p.y - 1 : direction === "down" ? p.y + 1 : p.y
 
             const trigger = triggerCells.find(cell => cell.x === newX && cell.y === newY)
-            console.log(trigger)
+
             if (trigger !== undefined && !gamesCompleted.some(game => game === trigger.name)) {
                 setActiveMiniGameWithMusic(trigger.name)
             } else {
@@ -189,10 +293,20 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         }
     }
     const onKeyPress = (e: KeyboardEvent) => {
-        if (e.key === "a") move("left")
-        if (e.key === "d") move("right")
-        if (e.key === "w") move("up")
-        if (e.key === "s") move("down")
+        console.log("key pressed", e.key)
+        console.log("activeMiniGame", activeMiniGame)
+        if (activeMiniGame === "Sail the Seven Seas") {
+
+            if (e.key === "a") moveSea("left")
+            if (e.key === "d") moveSea("right")
+            if (e.key === "w") moveSea("up")
+            if (e.key === "s") moveSea("down")
+        } else if (!activeMiniGame) {
+            if (e.key === "a") moveMap("left")
+            if (e.key === "d") moveMap("right")
+            if (e.key === "w") moveMap("up")
+            if (e.key === "s") moveMap("down")
+        }
     }
 
     useLayoutEffect(() => {
@@ -210,7 +324,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 activeMiniGame: { get: activeMiniGame, set: setActiveMiniGameWithMusic },
                 grid: {
                     ...pos,
-                    move,
+                    move: moveMap,
                     lastMove
                 },
                 activeSpeechBubble: { get: activeSpeechBubble, set: setActiveSpeechBubble },

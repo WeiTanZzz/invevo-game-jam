@@ -48,12 +48,13 @@ const Cell = ({ x, y }: Coordinate) => {
                 isTriggerCell && "shadow-cell-trigger",
                 canMoveToCell ? "hover:shadow-cell-available" : !isCurrentCell && "hover:shadow-cell-unavailable",
                 isCellHidden && "shadow-none hover:shadow-none",
-                isCurrentCell && grid.lastMove === "right" && "rotate-90",
-                isCurrentCell && grid.lastMove === "down" && "rotate-180",
-                isCurrentCell && grid.lastMove === "left" && "-rotate-90"
+                isCurrentCell && grid.lastMove === "up" && "-rotate-90",
+                isCurrentCell && grid.lastMove === "right" && "rotate-0",
+                isCurrentCell && grid.lastMove === "down" && "rotate-90",
+                isCurrentCell && grid.lastMove === "left" && "scale-x-[-1]"
             )}
         >
-            {isCurrentCell && <span>🚀</span>}
+            {isCurrentCell && <img src="./bandana.png" />}
         </div>
     )
 }
