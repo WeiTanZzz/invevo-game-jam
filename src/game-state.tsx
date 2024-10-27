@@ -241,23 +241,24 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             setActiveSpeechBubble("Ye’ve crashed into an island! No safe harbor here, just jagged rocks and hungry shadows...")
             return
         }
-        if (minigames.navigation.grid[newX][newY].type === "goal") {
+        else if (minigames.navigation.grid[newX][newY].type === "goal") {
             setActiveSpeechBubble("Ye’ve reached the goal! But don’t celebrate too soon—darkness still stirs in the depths...")
             completeMinigame()
         }
-        if (minigames.navigation.grid[newX][newY].type === "monster") {
+        else if (minigames.navigation.grid[newX][newY].type === "monster") {
             setActiveSpeechBubble("Watch out for the sea beats! They be older than the tides, and twice as hungry...")
             setGamePlayingState("Game over")
         }
-        if (minigames.navigation.grid[newX][newY].type === "enemy") {
+        else if (minigames.navigation.grid[newX][newY].type === "enemy") {
             setActiveSpeechBubble("Watch out for the blasted enemy flags! They’ll not hesitate to send us to the depths!")
             setGamePlayingState("Game over")
         }
-        if (newX < 0 || newX >= gridWidth || newY < 0 || newY >= gridHeight) {
+        else if (newX < 0 || newX >= gridWidth || newY < 0 || newY >= gridHeight) {
             setActiveSpeechBubble("Thar be dragons here!! Ye've sailed too far, turn back before it’s too late!")
+        } else {
+            setActiveSpeechBubble("The sea be calm, but the winds be fickle. Keep yer wits about ye, lest ye end up in Davy Jones’ locker...")
         }
 
-        setActiveSpeechBubble("The sea be calm, but the winds be fickle. Keep yer wits about ye, lest ye end up in Davy Jones’ locker...")
         minigames.navigation.grid[newX][newY] = player
         minigames.navigation.grid[playerX][playerY] = water
     }
