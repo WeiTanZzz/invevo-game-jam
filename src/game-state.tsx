@@ -192,7 +192,6 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [gamesCompleted, addCompletedGame] = useState<(typeof GAMES)[number]["name"][]>([])
     const [activeMiniGame, setActiveMiniGame] = useState<(typeof GAMES)[number]["name"]>()
     const setActiveMiniGameWithMusic = (game: (typeof GAMES)[number]["name"] | undefined) => {
-        console.log("setActiveMiniGameWithMusic", game)
         if (activeMiniGame === game) return
         setActiveMiniGame(game)
         audio.setBGM(GAMES.find(g => g.name === game)?.music)
@@ -306,7 +305,6 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const onKeyPress = useCallback(
         (e: KeyboardEvent) => {
             const moveFn = activeMiniGame === "Sail the Seven Seas" ? moveSea : moveMap
-            console.log("onKeyPress", e.key, activeMiniGame)
 
             if (e.key === "a") moveFn("left")
             if (e.key === "d") moveFn("right")
