@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useGameState } from "../game-state"
 
 export const Timer = () => {
-    const { gamePlayingState, timeLeft } = useGameState()
+    const { gamePlayingState, timeLeft, currentDay } = useGameState()
 
     useEffect(() => {
         if (timeLeft.get <= 0) {
@@ -25,6 +25,7 @@ export const Timer = () => {
 
     return (
         <div className="relative w-64 h-32 bg-brown-800 rounded-lg border-4 border-yellow-600 shadow-lg overflow-hidden">
+            <h2 className="text-3xl font-bold">Day: {currentDay.day}</h2>
             <div className="absolute inset-0 bg-yellow-900 opacity-75 flex items-center justify-center rounded-lg">
                 <div className="text-3xl font-mono text-white">Time Left:</div>
                 {timeLeft.get > 30 ? (
