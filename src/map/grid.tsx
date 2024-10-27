@@ -20,7 +20,7 @@ export const Grid = () => {
 }
 
 const Cell = ({ x, y }: Coordinate) => {
-    const { grid } = useGameState()
+    const { grid, gamesCompleted } = useGameState()
 
     const isCellHidden = hiddenCells.some(cell => cell.x === x && cell.y === y)
 
@@ -37,7 +37,7 @@ const Cell = ({ x, y }: Coordinate) => {
         if (yDist > 0) grid.move("up")
     }
 
-    const isTriggerCell = triggerCells.some(cell => cell.x === x && cell.y === y)
+    const isTriggerCell = triggerCells.some(cell => cell.x === x && cell.y === y && !gamesCompleted.get.some(game => game === cell.name))
 
     return (
         <div

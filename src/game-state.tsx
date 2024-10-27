@@ -280,10 +280,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const completeMinigame = () => {
-        console.log("completeMinigame", activeMiniGame)
-        if(activeMiniGame !== undefined && activeMiniGame !== "Check the island") {
-            addCompletedGame([activeMiniGame])
-        }
+        addCompletedGame([...gamesCompleted, activeMiniGame!])
 
         setActiveMiniGameWithMusic(undefined)
 
