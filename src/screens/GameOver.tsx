@@ -8,7 +8,7 @@ export const GameOver = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-full bg-red-500 text-white p-8">
+        <div className="h-screen bg-red-600 flex flex-col items-center justify-center  flex-co text-white p-8 ">
             <h2 className="text-3xl font-bold mb-4">Game Over!</h2>
             <p className="text-lg mb-6">The sails have fallen! Better luck next time, First Mate!</p>
             <button
