@@ -34,7 +34,6 @@ export const Timer = () => {
                 <div className={`text-2xl font-mono ${timeLeft.get > 30 ? "text-white" : "text-red-500"}`}>{formatTime(timeLeft.get)}</div>
             </div>
 
-            {/* Borders */}
             <div className="absolute top-0 left-0 w-full h-1 bg-yellow-600 rounded-t-lg"></div>
             <div className="absolute bottom-0 left-0 w-full h-1 bg-yellow-600 rounded-b-lg"></div>
             <div className="absolute left-0 top-0 h-full w-1 bg-yellow-600 rounded-l-lg"></div>
