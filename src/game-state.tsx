@@ -360,7 +360,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     useLayoutEffect(() => {
         window.addEventListener("keydown", onKeyPress)
         return () => window.removeEventListener("keydown", onKeyPress)
-    }, [activeMiniGame])
+    }, [activeMiniGame, onKeyPress])
 
     return (
         <GameStateContext.Provider
