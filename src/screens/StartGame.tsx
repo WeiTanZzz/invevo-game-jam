@@ -1,9 +1,10 @@
 import { useGameState } from "../game-state"
 
 export const StartGame = () => {
-    const { gamePlayingState, timeLeft, currentDay } = useGameState()
+    const { gamePlayingState, timeLeft, currentDay, reset } = useGameState()
 
     const startGame = () => {
+        reset()
         gamePlayingState.set("Playing")
         timeLeft.set(currentDay.timer)
     }

@@ -4,7 +4,7 @@ const WinScreen = () => {
     const { gamePlayingState } = useGameState()
 
     const resetGame = () => {
-        gamePlayingState.set("Playing")
+        gamePlayingState.set("Start game")
     }
 
     return (

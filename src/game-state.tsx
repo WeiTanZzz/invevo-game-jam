@@ -113,11 +113,11 @@ const getDailyIsland = (islands: IslandState[]) => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 90, minigames: randomGames(1) },
-    { day: "Tuesday", index: 1, timer: 70, minigames: randomGames(2) },
-    { day: "Wednesday", index: 2, timer: 60, minigames: randomGames(2) },
-    { day: "Thursday", index: 3, timer: 60, minigames: randomGames(3) },
-    { day: "Friday", index: 4, timer: 60, minigames: randomGames(4) }
+    { day: "Monday", index: 0, timer: 90, minigames: randomGames(1) }
+    // { day: "Tuesday", index: 1, timer: 70, minigames: randomGames(2) },
+    // { day: "Wednesday", index: 2, timer: 60, minigames: randomGames(2) },
+    // { day: "Thursday", index: 3, timer: 60, minigames: randomGames(3) },
+    // { day: "Friday", index: 4, timer: 60, minigames: randomGames(4) }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -325,7 +325,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
         if (updatedGamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
             setActiveSpeechBubble(
-                `Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`
+                `Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`
             )
             setGamePlayingState("Win")
         } else if (updatedGamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
