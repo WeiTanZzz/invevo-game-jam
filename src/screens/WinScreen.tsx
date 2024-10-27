@@ -1,10 +1,6 @@
-import { useGameState } from "../game-state"
-
 const WinScreen = () => {
-    const { gamePlayingState } = useGameState()
-
     const resetGame = () => {
-        gamePlayingState.set("Start game")
+        window.location.reload()
     }
 
     return (

@@ -1,10 +1,6 @@
-import { useGameState } from "../game-state"
-
 export const GameOver = () => {
-    const { gamePlayingState, reset } = useGameState()
     const resetGame = () => {
-        reset()
-        gamePlayingState.set("Start game")
+        window.location.reload()
     }
 
     return (

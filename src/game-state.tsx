@@ -112,7 +112,8 @@ const getDailyIsland = (islands: IslandState[]) => {
     return islands[index]
 }
 
-const daySpecifications = [
+type Day = { day: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday"; index: number; timer: number; minigames: string[] }
+const daySpecifications: Day[] = [
     { day: "Monday", index: 0, timer: 90, minigames: randomGames(1) },
     { day: "Tuesday", index: 1, timer: 70, minigames: randomGames(2) },
     { day: "Wednesday", index: 2, timer: 60, minigames: randomGames(2) },
@@ -145,8 +146,8 @@ type GameState = {
         get: string
         set: (items: string) => void
     }
-    currentDay: (typeof daySpecifications)[number]
-    daySpecifications: typeof daySpecifications
+    currentDay: Day
+    daySpecifications: Day[]
     minigames: MinigamesBaseState
     gamePlayingState: {
         get: GamePlayingState
@@ -224,7 +225,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [activeSpeechBubble, setActiveSpeechBubble] = useState<string>("")
 
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
-    const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
+    const [currentDay, setCurrentDay] = useState<Day>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
     const [gamePlayingState, setGamePlayingState] = useState<GamePlayingState>("Start game")
     const [timeLeft, setTimeLeft] = useState<number>(currentDay.timer)
@@ -378,7 +379,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 nextDay: nextDay,
                 completeGame: completeMinigame,
                 currentDay,
-                daySpecifications,
+                daySpecifications: daySpecifications,
                 minigames,
                 gamePlayingState: { get: gamePlayingState, set: setGamePlayingState },
                 timeLeft: { get: timeLeft, set: setTimeLeft }
