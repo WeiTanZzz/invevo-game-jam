@@ -392,7 +392,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
 const defaultGameState = {
     grid: {
-        x: 2,
+        x: 21,
         y: 6,
         lastMove: "right"
     }
