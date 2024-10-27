@@ -69,7 +69,7 @@ export const CannonballReload = () => {
           }
         `}
             </style>
-            <div className="mt-20 ">
+            <div className="flex flex-col mt-20 items-center">
                 <h1 className="text-2xl font-bold mb-4 ">Reload the Cannon!</h1>
                 <div
                     className="relative w-64 h-32 border border-black rounded-lg overflow-hidden"
