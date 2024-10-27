@@ -39,7 +39,7 @@ const SingToCrewsMiniGame = () => {
     const [crews, setCrews] = useState<CrewProps[]>(MOCK_CREWS)
     const [gameStart, setGameStart] = useState(true)
     const [canContinue, setCanContinue] = useState(true)
-    const [aims, setAims] = useState<string[]>(getRandomNotes(2))
+    const [aims, setAims] = useState<string[]>(getRandomNotes(1))
     const frequencyAnalyserRef = useRef<FrequencyAnalyser | null>(null)
 
     const aimsRef = useRef(aims)

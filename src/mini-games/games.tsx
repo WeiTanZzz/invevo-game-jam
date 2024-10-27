@@ -2,6 +2,7 @@ import { CannonballReload } from "./cannonballReloadMiniGame/cannonballReload.ts
 import { CheckTheIslandMiniGame } from "./checkTheIslandMiniGame/CheckTheIslandMiniGame.tsx"
 import { NavigationMinigame } from "./navigation/navigationMinigame"
 import { RaiseSailClicker } from "./raiseTheSailMiniGame/raiseTheSailMiniGame.tsx"
+import SingToCrewsMiniGame from "./sing-to-crews/sing-to-crews-mini-game.tsx"
 import { TelescopeMiniGame } from "./telescopeMinigame/TelescopeMiniGame"
 
 export const GAMES: {
@@ -32,6 +33,11 @@ export const GAMES: {
     {
         name: "Reload the cannon",
         component: <CannonballReload />,
+        music: "/audio/bgm/sailing.mp3"
+    },
+    {
+        name: "Sing to Crews",
+        component: <SingToCrewsMiniGame />,
         music: "/audio/bgm/sailing.mp3"
     }
 ] as const
