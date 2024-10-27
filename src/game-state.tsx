@@ -208,13 +208,12 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
-    const [gamePlayingState, setGamePlayingState] = useState(false)
+    const [gamePlayingState, setGamePlayingState] = useState<GamePlayingState>("Start game")
 
     const moveSea = (direction: MoveDirection) => {
-        
         const playerX = minigames.navigation.grid.findIndex(row => row.find(cell => cell.type === "player"))!
         const playerY = minigames.navigation.grid[playerX].findIndex(cell => cell.type === "player")!
-        
+
         const newX = direction === "left" ? playerX - 1 : direction === "right" ? playerX + 1 : playerX
         const newY = direction === "up" ? playerY - 1 : direction === "down" ? playerY + 1 : playerY
 

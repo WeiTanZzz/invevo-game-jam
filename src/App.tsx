@@ -7,15 +7,25 @@ import { Overlay } from "./overlay/overlay.tsx"
 import { Speech } from "./overlay/speech.tsx"
 import Timer from "./overlay/timer.tsx"
 import GameOver from "./screens/GameOver.tsx"
+import StartGame from "./screens/StartGame.tsx"
 
 function App() {
-    const { activeMiniGame, gameOver } = useGameState()
+    const { activeMiniGame, gamePlayingState } = useGameState()
 
+    // need to create a different scene for each gameplayingstate
     return (
         <div>
-            {gameOver.get ? (
-                <GameOver />
-            ) : (
+            {gamePlayingState.get === "Game over" && <GameOver />}
+            {gamePlayingState.get === "Start game" && (
+                <span>
+                    <Overlay>
+                        <Speech />
+                    </Overlay>
+                    <StartGame />
+                </span>
+            )}
+            {/* {gamePlayingState.get === "Win" && <GameOver />} */}
+            {gamePlayingState.get === "Playing" && (
                 <DragAndDropProvider>
                     <Overlay>
                         <Speech />

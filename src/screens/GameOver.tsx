@@ -1,10 +1,10 @@
 import { useGameState } from "../game-state"
 
 export const GameOver = () => {
-    const { gameOver, reset } = useGameState()
+    const { gamePlayingState, reset } = useGameState()
     const resetGame = () => {
         reset()
-        gameOver.set(false)
+        gamePlayingState.set("Game over")
     }
 
     return (
