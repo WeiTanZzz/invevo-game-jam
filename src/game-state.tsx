@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useLayoutEffect, useState } from "react"
+import { createContext, ReactNode, useCallback, useContext, useEffect, useLayoutEffect, useState } from "react"
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
@@ -303,24 +303,27 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             )
         }
     }
-    const onKeyPress = (e: KeyboardEvent) => {
-        if (e.key === "f") moveSea("left")
-        if (e.key === "h") moveSea("right")
-        if (e.key === "t") moveSea("up")
-        if (e.key === "g") moveSea("down")
+    const onKeyPress = useCallback(
+        (e: KeyboardEvent) => {
+            const moveFn = activeMiniGame === "Sail the Seven Seas" ? moveSea : moveMap
+            console.log("onKeyPress", e.key, activeMiniGame)
 
-        if (e.key === "a") moveMap("left")
-        if (e.key === "d") moveMap("right")
-        if (e.key === "w") moveMap("up")
-        if (e.key === "s") moveMap("down")
-    }
+            if (e.key === "a") moveFn("left")
+            if (e.key === "d") moveFn("right")
+            if (e.key === "w") moveFn("up")
+            if (e.key === "s") moveFn("down")
+        },
+        [activeMiniGame]
+    )
+
+    useEffect(() => {
+        reset()
+    }, [])
 
     useLayoutEffect(() => {
-        reset()
-
         window.addEventListener("keydown", onKeyPress)
         return () => window.removeEventListener("keydown", onKeyPress)
-    }, [])
+    }, [activeMiniGame])
 
     return (
         <GameStateContext.Provider
