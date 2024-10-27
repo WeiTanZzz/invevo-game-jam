@@ -21,7 +21,7 @@ export const RaiseSailClicker = () => {
         if (isComplete) return
 
         const decayInterval = setInterval(() => {
-            setProgress(prev => Math.max(prev - 0.004, 0))
+            setProgress(prev => Math.max(prev - 0.3, 0))
         }, 100)
 
         return () => clearInterval(decayInterval)
