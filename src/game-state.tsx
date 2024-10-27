@@ -140,6 +140,10 @@ type GameState = {
         get: GamePlayingState
         set: (item: GamePlayingState) => void
     }
+    timeLeft: {
+        get: number
+        set: (time: number) => void
+    }
 }
 
 type MinigamesBaseState = {
@@ -208,6 +212,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
     const [gamePlayingState, setGamePlayingState] = useState<GamePlayingState>("Start game")
+    const [timeLeft, setTimeLeft] = useState<number>(currentDay.timer)
 
     const moveSea = (direction: MoveDirection) => {
         const playerX = minigames.navigation.grid.findIndex(row => row.find(cell => cell.type === "player"))!
@@ -269,11 +274,12 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
 
     const startDay = (index: number) => {
         const day = daySpecifications[index]
+        setCurrentDay(day)
         setActiveMiniGame(undefined)
         setActiveMiniGameWithMusic(undefined)
         setItems([])
+        setTimeLeft(day.timer)
         addCompletedGame([])
-        setCurrentDay(day)
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
@@ -341,7 +347,8 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 currentDay,
                 daySpecifications,
                 minigames,
-                gamePlayingState: { get: gamePlayingState, set: setGamePlayingState }
+                gamePlayingState: { get: gamePlayingState, set: setGamePlayingState },
+                timeLeft: { get: timeLeft, set: setTimeLeft }
             }}
         >
             {children}
