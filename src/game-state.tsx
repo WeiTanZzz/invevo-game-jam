@@ -276,19 +276,21 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
-        setActiveSpeechBubble(`welcome to a new day, it's ${currentDay.day} and you have ${currentDay.minigames.length} tasks to complete.`)
+        setActiveSpeechBubble(`Yarr... it’s ${currentDay.day}, and ye’re still breathin’. Best get crackin’—${currentDay.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`)
     }
 
     const completeMinigame = () => {
         addCompletedGame([activeMiniGame ?? ""])
         setActiveMiniGameWithMusic(undefined)
 
-        if (gamesCompleted.length === currentDay.minigames.length) {
-            setActiveSpeechBubble(`congratulations, you've completed all the tasks for today. Let's move on to the next day.`)
+        if (gamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
+            setActiveSpeechBubble(`Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`)
+        } else if (gamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
+            setActiveSpeechBubble(`Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`)
             nextDay()
         } else {
             setActiveSpeechBubble(
-                `congratulations, you've completed a task for today. You have ${currentDay.minigames.length - gamesCompleted.length} tasks left.`
+                `A task be done, aye... but don’t start thinkin’ ye’re safe just yet. ${currentDay.minigames.length - gamesCompleted.length} tasks still remain, and only a fool counts his gold before he gets back to land...`
             )
         }
     }
