@@ -6,7 +6,7 @@ import { useGameState } from "../../game-state.tsx"
 const AUDIO_CHEER = "singToCrews/cheer"
 const AUDIO_BOO = "singToCrews/boo"
 
-const NOTES = ["C4", "D4"]
+const NOTES = ["C4"]
 
 const getRandomNotes = (n: number) => {
     const selectedNotes: string[] = []
