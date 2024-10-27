@@ -5,7 +5,6 @@ import { GAMES } from "./mini-games/games.tsx"
 import { Overlay } from "./overlay/overlay.tsx"
 import { Speech } from "./overlay/speech.tsx"
 import Timer from "./overlay/timer.tsx"
-import { DaySummary } from "./screens/DaySummary.tsx"
 import GameOver from "./screens/GameOver.tsx"
 import StartGame from "./screens/StartGame.tsx"
 
@@ -40,17 +39,6 @@ function App() {
                         </>
                     )}
                 </DragAndDropProvider>
-            )}
-            {gamePlayingState.get === "Day over" && (
-                <>
-                    <Overlay>
-                        <Speech />
-                        <span className="ml-2">
-                            <Timer />
-                        </span>
-                    </Overlay>
-                    <DaySummary />
-                </>
             )}
         </div>
     )
