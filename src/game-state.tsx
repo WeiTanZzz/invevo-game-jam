@@ -210,16 +210,14 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [isGameOver, setIsGameOver] = useState(false)
 
     const moveSea = (direction: MoveDirection) => {
-        console.log("moveSea", direction)
+        
         const playerX = minigames.navigation.grid.findIndex(row => row.find(cell => cell.type === "player"))!
         const playerY = minigames.navigation.grid[playerX].findIndex(cell => cell.type === "player")!
-        console.log("current player position", playerX, playerY)
+        
         const newX = direction === "left" ? playerX - 1 : direction === "right" ? playerX + 1 : playerX
         const newY = direction === "up" ? playerY - 1 : direction === "down" ? playerY + 1 : playerY
-        console.log("new player position", newX, newY)
-        console.log("")
+
         if (minigames.navigation.grid[newX][newY].type === "blocker") {
-            console.log("new player position", newX, newY)
             setActiveSpeechBubble("Ye’ve crashed into an island! No safe harbor here, just jagged rocks and hungry shadows...")
         }
         if (minigames.navigation.grid[newX][newY].type === "goal") {
@@ -281,11 +279,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
         setActiveSpeechBubble(
-<<<<<<< HEAD
-            `Yarr... it’s ${currentDay.day}, and ye’re still breathin’. Best get crackin’—${currentDay.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
-=======
             `Yarr... it’s ${day.day}, and ye’re still breathin’. Best get crackin’ ${day.minigames} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
->>>>>>> 7d88b97 (fix day moves)
         )
     }
 
