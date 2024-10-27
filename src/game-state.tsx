@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useLayoutEffect, useState } from 
 import { useAudio } from "./audio/AudioProvider.tsx"
 import { GRID_HEIGHT, GRID_WIDTH, hiddenCells, triggerCells } from "./map/cells"
 import { GAMES } from "./mini-games/games"
+import { GamePlayingState } from "./types/game-playing-state.ts"
 import { ItemState } from "./types/item-state"
 
 const gridWidth = 20
@@ -135,9 +136,9 @@ type GameState = {
     currentDay: (typeof daySpecifications)[number]
     daySpecifications: typeof daySpecifications
     minigames: MinigamesBaseState
-    gameOver: {
-        get: boolean
-        set: (item: boolean) => void
+    gamePlayingState: {
+        get: GamePlayingState
+        set: (item: GamePlayingState) => void
     }
 }
 
@@ -207,7 +208,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
-    const [isGameOver, setIsGameOver] = useState(false)
+    const [gamePlayingState, setGamePlayingState] = useState(false)
 
     const moveSea = (direction: MoveDirection) => {
         
@@ -340,7 +341,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 currentDay,
                 daySpecifications,
                 minigames,
-                gameOver: { get: isGameOver, set: setIsGameOver }
+                gamePlayingState: { get: gamePlayingState, set: setGamePlayingState }
             }}
         >
             {children}
