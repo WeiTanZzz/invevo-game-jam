@@ -12,7 +12,7 @@ export const TelescopeMiniGame = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
     useEffect(() => {
-        activeSpeechBubble.set(`Use your telescope to find ${minigames.telescope.islandToFind.name}, use the legend for assistance.`)
+        activeSpeechBubble.set(`Grab yer spyglass and find ${minigames.telescope.islandToFind.name}, ye scallywag! Use the legend if ye need a hand—lest ye end up sailin’ straight into the maw of the unknown...`)
 
         audio.addEffect(AUDIO_FIND_ISLAND, "/audio/effect/find-island.mp3")
         audio.setBGM("/audio/bgm/sailing.mp3")

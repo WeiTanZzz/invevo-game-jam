@@ -5,14 +5,14 @@ export const RaiseSailClicker = () => {
     const [progress, setProgress] = useState(0)
     const [isComplete, setIsComplete] = useState(false)
     const { activeSpeechBubble, completeGame } = useGameState()
-    activeSpeechBubble.set("Ahoy, me hearties! Click the button to raise the sail. The faster you click, the faster we'll be on our way!")
+    activeSpeechBubble.set("Ahoy! Click that button and raise the sail. The faster ye click, the sooner we’ll be off... and there be things in the dark that follow close, hungry for those who linger too long...")
 
     const handleClick = () => {
         setProgress(prev => Math.min(prev + 1, 50))
 
         if (progress + 1 >= 50) {
             setIsComplete(true)
-            activeSpeechBubble.set("Sail raised! Great work, matey!")
+            activeSpeechBubble.set("Sail’s up! About time, matey! Now let’s catch the wind and see where the dark seas take us...")
             completeGame()
         }
     }
@@ -48,7 +48,7 @@ export const RaiseSailClicker = () => {
              hover:bg-yellow-800 hover:border-yellow-700 shadow-lg transform hover:scale-105 transition-all
              relative before:absolute before:-inset-1 before:bg-black before:opacity-25 before:rounded-lg"
             >
-                Click to Raise the Sail
+                Click to Hoist the Sail, ye scurvy dog!
             </button>
         </div>
     )

@@ -83,7 +83,7 @@ const SingToCrewsMiniGame = () => {
     )
 
     useEffect(() => {
-        activeSpeechBubble.set(`Sing the notes to the crew to make them happy! Clue:${aims[0]}`)
+        activeSpeechBubble.set(`Sing me a shanty to lift me spirits! Here’s a hint fer ye: ${aims[0]}. Don’t keep me waitin’, or I’ll be keelhaul ye fer fun!`)
         const startRecording = async () => {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true })

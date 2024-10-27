@@ -47,11 +47,11 @@ const Cell = ({ imageToRender }: { imageToRender: IslandState }) => {
     const onClick = () => {
         if (imageToRender.name === minigames.telescope.islandToFind.name) {
             audio.playEffect(AUDIO_FIND_ISLAND)
-            activeSpeechBubble.set(`Good job you found ${minigames.telescope.islandToFind.name}, not bad for a landlubber!`)
+            activeSpeechBubble.set(`Well done! Ye’ve spotted ${minigames.telescope.islandToFind.name}, not bad fer a landlubber! Just remember, even a blind fish finds its way now and then...`)
             completeGame()
         } else {
             activeSpeechBubble.set(
-                `WHAT ARE YOU DOING? YOU ARE SUPPOSED TO FIND ${minigames.telescope.islandToFind.name.toUpperCase()}, NOT ${imageToRender.name.toUpperCase()}!`
+                `What in Davy Jones' locker are ye doin'?! Ye’re supposed to be findin' ${minigames.telescope.islandToFind.name.toUpperCase()}, not ${imageToRender.name.toUpperCase()}! Do ye fancy a swim with the sea monsters, ye addled-brain swab?!`
             )
         }
     }

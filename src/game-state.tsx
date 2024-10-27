@@ -106,11 +106,11 @@ const getDailyIsland = (islands: IslandState[]) => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 60, minigames: randomGames(1) },
-    { day: "Tuesday", index: 1, timer: 50, minigames: randomGames(5) },
-    { day: "Wednesday", index: 2, timer: 40, minigames: randomGames(5) },
-    { day: "Thursday", index: 3, timer: 30, minigames: randomGames(6) },
-    { day: "Friday", index: 4, timer: 20, minigames: randomGames(10) }
+    { day: "Monday", index: 0, timer: 60, minigames: randomGames(3) },
+    { day: "Tuesday", index: 1, timer: 50, minigames: randomGames(3) },
+    { day: "Wednesday", index: 2, timer: 40, minigames: randomGames(3) },
+    { day: "Thursday", index: 3, timer: 30, minigames: randomGames(3) },
+    { day: "Friday", index: 4, timer: 20, minigames: randomGames(3) }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
@@ -219,23 +219,23 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         const newY = direction === "up" ? playerY - 1 : direction === "down" ? playerY + 1 : playerY
 
         if (minigames.navigation.grid[newX][newY].type === "blocker") {
-            setActiveSpeechBubble("You have hit an island!")
+            setActiveSpeechBubble("Ye’ve crashed into an island! No safe harbor here, just jagged rocks and hungry shadows...")
         }
         if (minigames.navigation.grid[newX][newY].type === "goal") {
-            setActiveSpeechBubble("You have reached the goal!")
+            setActiveSpeechBubble("Ye’ve reached the goal! But don’t celebrate too soon—darkness still stirs in the depths...")
             completeMinigame()
         }
         if (minigames.navigation.grid[newX][newY].type === "monster") {
-            setActiveSpeechBubble("You have been attacked by a monster!")
+            setActiveSpeechBubble("Watch out for the sea beats! They be older than the tides, and twice as hungry...")
         }
         if (minigames.navigation.grid[newX][newY].type === "enemy") {
-            setActiveSpeechBubble("You have been attacked by an enemy ship!")
+            setActiveSpeechBubble("Watch out for the blasted enemy flags! They’ll not hesitate to send us to the depths!")
         }
         if (newX < 0 || newX >= gridWidth || newY < 0 || newY >= gridHeight) {
-            setActiveSpeechBubble("Thar be dragons here!")
+            setActiveSpeechBubble("Thar be dragons here!! Ye've sailed too far, turn back before it’s too late!")
         }
 
-        setActiveSpeechBubble("The open sea is calm.")
+        setActiveSpeechBubble("The sea be calm, but the winds be fickle. Keep yer wits about ye, lest ye end up in Davy Jones’ locker...")
         minigames.navigation.grid[newX][newY] = player
         minigames.navigation.grid[playerX][playerY] = water
     }
@@ -280,12 +280,16 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const completeMinigame = () => {
-        addCompletedGame([activeMiniGame ?? ""])
+        console.log("completeMinigame", activeMiniGame)
+        if(activeMiniGame !== undefined && activeMiniGame !== "Check the island") {
+            addCompletedGame([activeMiniGame])
+        }
+
         setActiveMiniGameWithMusic(undefined)
 
-        if (gamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
+        if (gamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
             setActiveSpeechBubble(`Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`)
-        } else if (gamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
+        } else if (gamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
             setActiveSpeechBubble(`Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`)
             nextDay()
         } else {
@@ -295,10 +299,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         }
     }
     const onKeyPress = (e: KeyboardEvent) => {
-        console.log("key pressed", e.key)
-        console.log("activeMiniGame", activeMiniGame)
         if (activeMiniGame === "Sail the Seven Seas") {
-
             if (e.key === "a") moveSea("left")
             if (e.key === "d") moveSea("right")
             if (e.key === "w") moveSea("up")
@@ -312,7 +313,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     useLayoutEffect(() => {
-        startDay()
+        reset()
 
         window.addEventListener("keydown", onKeyPress)
         return () => window.removeEventListener("keydown", onKeyPress)
