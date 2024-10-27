@@ -13,7 +13,7 @@ function App() {
     const { activeMiniGame, gamePlayingState } = useGameState()
 
     return (
-        <div>
+        <div className="w-full h-full">
             {gamePlayingState.get === "Game over" && <GameOver />}
             {gamePlayingState.get === "Start game" && (
                 <span>
