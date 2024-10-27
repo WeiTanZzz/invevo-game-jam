@@ -6,30 +6,37 @@ import { GAMES } from "./mini-games/games.tsx"
 import { Overlay } from "./overlay/overlay.tsx"
 import { Speech } from "./overlay/speech.tsx"
 import Timer from "./overlay/timer.tsx"
+import GameOver from "./screens/GameOver.tsx"
 
 function App() {
-    const { activeMiniGame } = useGameState()
+    const { activeMiniGame, gameOver } = useGameState()
 
     return (
-        <DragAndDropProvider>
-            <Overlay>
-                <Speech />
-                <span className="ml-2">
-                    <Timer />
-                </span>
-            </Overlay>
-            {activeMiniGame.get !== undefined ? (
-                <div className="bg-blue-800">{GAMES.find(g => activeMiniGame.get === g.name)?.component}</div>
+        <div>
+            {gameOver.get ? (
+                <GameOver />
             ) : (
-                <>
-                    <Map />
-                    <Pos />
-                    <Inventory id="chest-one" width={1} height={4} colour="bg-blue-300" />
-                    <Inventory id="player-inventory" width={2} height={4} colour="bg-orange-300" />
-                    <Inventory id="chest-two" width={2} height={2} colour="bg-blue-300" />
-                </>
+                <DragAndDropProvider>
+                    <Overlay>
+                        <Speech />
+                        <span className="ml-2">
+                            <Timer />
+                        </span>
+                    </Overlay>
+                    {activeMiniGame.get !== undefined ? (
+                        <div className="bg-blue-800">{GAMES.find(g => activeMiniGame.get === g.name)?.component}</div>
+                    ) : (
+                        <>
+                            <Map />
+                            <Pos />
+                            <Inventory id="chest-one" width={1} height={4} colour="bg-blue-300" />
+                            <Inventory id="player-inventory" width={2} height={4} colour="bg-orange-300" />
+                            <Inventory id="chest-two" width={2} height={2} colour="bg-blue-300" />
+                        </>
+                    )}
+                </DragAndDropProvider>
             )}
-        </DragAndDropProvider>
+        </div>
     )
 }
 

@@ -2,12 +2,13 @@ import { useState, useEffect } from "react"
 import { useGameState } from "../game-state"
 
 export const Timer = () => {
-    const { currentDay } = useGameState()
+    const { currentDay, gameOver } = useGameState()
     const [timeLeft, setTimeLeft] = useState(currentDay.timer)
 
     useEffect(() => {
         if (timeLeft <= 0) {
             //todo you have failed the game, show game over screen and button to reset the game
+            gameOver.set(true)
             return
         }
 

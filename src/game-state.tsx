@@ -141,6 +141,10 @@ type GameState = {
     currentDay: (typeof daySpecifications)[number]
     daySpecifications: typeof daySpecifications
     minigames: MinigamesBaseState
+    gameOver: {
+        get: boolean
+        set: (item: boolean) => void
+    }
 }
 
 type MinigamesBaseState = {
@@ -209,6 +213,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     const [pos, setPos] = useState<{ x: number; y: number }>(defaultGameState.grid)
     const [currentDay, setCurrentDay] = useState<(typeof daySpecifications)[number]>(daySpecifications[0])
     const [lastMove, setLastMove] = useState<MoveDirection>(defaultGameState.grid.lastMove)
+    const [isGameOver, setIsGameOver] = useState(false)
 
     const moveSea = (direction: MoveDirection) => {
         console.log("moveSea", direction)
@@ -279,7 +284,9 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
-        setActiveSpeechBubble(`Yarr... it’s ${day.day}, and ye’re still breathin’. Best get crackin’ ${day.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`)
+        setActiveSpeechBubble(
+            `Yarr... it’s ${currentDay.day}, and ye’re still breathin’. Best get crackin’—${currentDay.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`
+        )
     }
 
     const completeMinigame = () => {
@@ -288,9 +295,13 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
         setActiveMiniGameWithMusic(undefined)
 
         if (gamesCompleted.length === currentDay.minigames.length && currentDay.index === daySpecifications.length - 1) {
-            setActiveSpeechBubble(`Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`)
+            setActiveSpeechBubble(
+                `Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`
+            )
         } else if (gamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
-            setActiveSpeechBubble(`Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`)
+            setActiveSpeechBubble(
+                `Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`
+            )
             nextDay()
         } else {
             setActiveSpeechBubble(
@@ -336,7 +347,8 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
                 completeGame: completeMinigame,
                 currentDay,
                 daySpecifications,
-                minigames
+                minigames,
+                gameOver: { get: isGameOver, set: setIsGameOver }
             }}
         >
             {children}
