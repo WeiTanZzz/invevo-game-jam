@@ -80,7 +80,12 @@ export const CannonballReload = () => {
                     <div className={`absolute bottom-0 left-0 bg-red-600 h-full z-10`} style={{ width: `${reloadLevel}%`, transition: "width 0.1s" }}></div>
                     <div className="absolute left-1/2  bg-green-600 h-full w-full z-0 "></div>
                 </div>
-                <button onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700">
+                <button
+                    onMouseDown={handleMouseDown}
+                    onMouseLeave={handleMouseUp}
+                    onMouseUp={handleMouseUp}
+                    className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+                >
                     {charging ? "Charging..." : "Hold to reload"}
                 </button>
                 {cannonFired && <div className="mt-4 text-lg">{fireMessage}</div>}
