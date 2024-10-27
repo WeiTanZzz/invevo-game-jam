@@ -1,3 +1,4 @@
+import { CannonballReload } from "./cannonballReloadMiniGame/cannonballReload.tsx"
 import { CheckTheIslandMiniGame } from "./checkTheIslandMiniGame/CheckTheIslandMiniGame.tsx"
 import { NavigationMinigame } from "./navigation/navigationMinigame"
 import { RaiseSailClicker } from "./raiseTheSailMiniGame/raiseTheSailMiniGame.tsx"
@@ -32,6 +33,11 @@ export const GAMES: {
     {
         name: "Check the island",
         component: <CheckTheIslandMiniGame />,
+        music: "/audio/bgm/sailing.mp3"
+    },
+    {
+        name: "Reload the cannon",
+        component: <CannonballReload />,
         music: "/audio/bgm/sailing.mp3"
     }
 ] as const

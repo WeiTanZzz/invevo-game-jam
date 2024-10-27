@@ -12,7 +12,6 @@ import StartGame from "./screens/StartGame.tsx"
 function App() {
     const { activeMiniGame, gamePlayingState } = useGameState()
 
-    // need to create a different scene for each gameplayingstate
     return (
         <div>
             {gamePlayingState.get === "Game over" && <GameOver />}

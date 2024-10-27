@@ -28,7 +28,9 @@ export const triggerCells: (Coordinate & { name: (typeof GAMES)[number]["name"] 
     { x: 14, y: 6, name: "Telescope Mini Game" },
     { x: 6, y: 6, name: "Sail the Seven Seas" },
     { x: 24, y: 6, name: "Raise the sail" },
-    { x: 8, y: 6, name: "Check the island" }
+    { x: 8, y: 6, name: "Check the island" },
+    { x: 19, y: 1, name: "Reload the cannon" },
+    { x: 19, y: 11, name: "Reload the cannon" }
 ]
 
 export const hiddenCells = [...edgeCells, ...innerCells] as const
