@@ -7,13 +7,21 @@ import { Speech } from "./overlay/speech.tsx"
 import Timer from "./overlay/timer.tsx"
 import GameOver from "./screens/GameOver.tsx"
 import StartGame from "./screens/StartGame.tsx"
+import WinScreen from "./screens/WinScreen.tsx"
 
 function App() {
     const { activeMiniGame, gamePlayingState } = useGameState()
 
     return (
         <div className="w-full h-full">
-            {gamePlayingState.get === "Game over" && <GameOver />}
+            {gamePlayingState.get === "Game over" && (
+                <span>
+                    <Overlay>
+                        <Speech />
+                    </Overlay>
+                    <GameOver />
+                </span>
+            )}
             {gamePlayingState.get === "Start game" && (
                 <span>
                     <Overlay>
@@ -22,7 +30,14 @@ function App() {
                     <StartGame />
                 </span>
             )}
-            {/* {gamePlayingState.get === "Win" && <GameOver />} */}
+            {gamePlayingState.get === "Win" && (
+                <span>
+                    <Overlay>
+                        <Speech />
+                    </Overlay>
+                    <WinScreen />
+                </span>
+            )}
             {gamePlayingState.get === "Playing" && (
                 <DragAndDropProvider>
                     <Overlay>

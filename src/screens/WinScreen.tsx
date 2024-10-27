@@ -8,8 +8,8 @@ const WinScreen = () => {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-full bg-green-500 text-white p-8">
-            <h1 className="text-4xl font-bold mb-4">Congratulations, Mateyy!</h1>
+        <div className="h-screen bg-green-500 flex items-center justify-center  flex-co text-white p-8 flex-col">
+            <h1 className="text-4xl font-bold mb-4 mt-20">Congratulations, Mateyy!</h1>
             <p className="text-lg mb-6">You've successfully navigated the ship on your adventure!</p>
             <button
                 onClick={resetGame}
