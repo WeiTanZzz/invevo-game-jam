@@ -106,9 +106,9 @@ const getDailyIsland = (islands: IslandState[]) => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 60, minigames: randomGames(3) },
-    { day: "Tuesday", index: 1, timer: 50, minigames: randomGames(3) },
-    { day: "Wednesday", index: 2, timer: 40, minigames: randomGames(3) },
+    { day: "Monday", index: 0, timer: 60, minigames: randomGames(1) },
+    { day: "Tuesday", index: 1, timer: 50, minigames: randomGames(2) },
+    { day: "Wednesday", index: 2, timer: 40, minigames: randomGames(2) },
     { day: "Thursday", index: 3, timer: 30, minigames: randomGames(3) },
     { day: "Friday", index: 4, timer: 20, minigames: randomGames(3) }
 ]
@@ -262,25 +262,28 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const reset = () => {
-        setCurrentDay(daySpecifications[0])
-        startDay()
+        startDay(0)
     }
 
     const nextDay = () => {
-        const nextDayIndex = currentDay.index + 1
-        setCurrentDay(daySpecifications[nextDayIndex])
-        startDay()
+        startDay(currentDay.index + 1)
     }
 
-    const startDay = () => {
+    const startDay = (index: number) => {
+        const day = daySpecifications[index]
+        setActiveMiniGame(undefined)
+        setActiveMiniGameWithMusic(undefined)
+        setItems([])
+        addCompletedGame([])
+        setCurrentDay(day)
         setPos(defaultGameState.grid)
         setLastMove(defaultGameState.grid.lastMove)
         setMinigames(buildMinigamesBaseState())
-        setActiveSpeechBubble(`Yarr... it’s ${currentDay.day}, and ye’re still breathin’. Best get crackin’—${currentDay.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`)
+        setActiveSpeechBubble(`Yarr... it’s ${day.day}, and ye’re still breathin’. Best get crackin’ ${day.minigames.length} tasks lie ahead. Ignore 'em, and it won’t be the plank ye fear—it’ll be what lurks below...`)
     }
 
     const completeMinigame = () => {
-        addCompletedGame([...gamesCompleted, activeMiniGame!])
+        addCompletedGame([...new Set([...gamesCompleted, activeMiniGame!])])
 
         setActiveMiniGameWithMusic(undefined)
 
