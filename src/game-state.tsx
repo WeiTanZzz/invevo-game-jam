@@ -327,6 +327,7 @@ export const GameStateProvider = ({ children }: { children: ReactNode }) => {
             setActiveSpeechBubble(
                 `Ye've made it through, ye wily sea dog! The week's end be upon us, and ye’ve returned to base in one piece—though. Rest easy... for now. But remember, the sea always hungers for more, and next time, ye might not be so lucky...`
             )
+            setGamePlayingState("Win")
         } else if (updatedGamesCompleted.length === currentDay.minigames.length && currentDay.index !== daySpecifications.length - 1) {
             setActiveSpeechBubble(
                 `Har har! Ye’ve scraped through today’s tasks... but don’t get too cheery now, ye’re still alone, other than me goodself. Keep at it, and ye might just make it to the end of the week.`
