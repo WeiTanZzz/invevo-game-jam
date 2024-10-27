@@ -113,11 +113,11 @@ const getDailyIsland = (islands: IslandState[]) => {
 }
 
 const daySpecifications = [
-    { day: "Monday", index: 0, timer: 90, minigames: randomGames(1) }
-    // { day: "Tuesday", index: 1, timer: 70, minigames: randomGames(2) },
-    // { day: "Wednesday", index: 2, timer: 60, minigames: randomGames(2) },
-    // { day: "Thursday", index: 3, timer: 60, minigames: randomGames(3) },
-    // { day: "Friday", index: 4, timer: 60, minigames: randomGames(4) }
+    { day: "Monday", index: 0, timer: 90, minigames: randomGames(1) },
+    { day: "Tuesday", index: 1, timer: 70, minigames: randomGames(2) },
+    { day: "Wednesday", index: 2, timer: 60, minigames: randomGames(2) },
+    { day: "Thursday", index: 3, timer: 60, minigames: randomGames(3) },
+    { day: "Friday", index: 4, timer: 60, minigames: randomGames(4) }
 ]
 
 type MoveDirection = "up" | "down" | "left" | "right"
